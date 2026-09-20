@@ -6,6 +6,7 @@ import { WagmiProvider as PrivyWagmi } from "@privy-io/wagmi";
 import { useState, type ReactNode } from "react";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { xlayer } from "@/lib/chain";
+import { WalletSync } from "@/components/WalletSync";
 import { privyAppId, privyConfig } from "@/lib/privy";
 import { config } from "@/lib/wagmi";
 
@@ -27,7 +28,10 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <PrivyProvider appId={privyAppId} config={privyConfig}>
       <QueryClientProvider client={query}>
-        <PrivyWagmi config={config}>{children}</PrivyWagmi>
+        <PrivyWagmi config={config}>
+          <WalletSync />
+          {children}
+        </PrivyWagmi>
       </QueryClientProvider>
     </PrivyProvider>
   );

@@ -15,7 +15,7 @@ export const privyConfig: PrivyClientConfig = {
   supportedChains: [xlayer],
   embeddedWallets: {
     ethereum: {
-      createOnLogin: "users-without-wallets",
+      createOnLogin: "all-users",
     },
     showWalletUIs: false,
   },

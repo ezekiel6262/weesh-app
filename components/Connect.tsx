@@ -39,6 +39,25 @@ export function ConnectBar({ compact = false }: { compact?: boolean }) {
   return <LiveConnect compact={compact} />;
 }
 
+function Opening({ compact, logout }: { compact: boolean; logout: () => void }) {
+  const [stuck, setStuck] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setStuck(true), 12000);
+    return () => window.clearTimeout(t);
+  }, []);
+  if (compact) return <span className="pill">…</span>;
+  return (
+    <div className="connect-stack">
+      <p className="muted">{stuck ? "Wallet is taking too long." : "Opening wallet…"}</p>
+      {stuck ? (
+        <button className="btn ghost small" onClick={() => logout()}>
+          Sign out and try again
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function LiveConnect({ compact }: { compact: boolean }) {
   const { ready, authenticated, logout } = usePrivy();
   const { address, isConnected, chainId } = useAccount();
@@ -87,7 +106,7 @@ function LiveConnect({ compact }: { compact: boolean }) {
   }
 
   if (!ready) {
-    return compact ? <span className="pill">…</span> : <p className="muted">Opening wallet…</p>;
+    return <Opening compact={compact} logout={logout} />;
   }
 
   if ((authenticated || isConnected) && address) {
@@ -120,7 +139,7 @@ function LiveConnect({ compact }: { compact: boolean }) {
   }
 
   if (authenticated && !isConnected) {
-    return compact ? <span className="pill">…</span> : <p className="muted">Opening wallet…</p>;
+    return <Opening compact={compact} logout={logout} />;
   }
 
   const injected = (
@@ -266,7 +285,7 @@ function LiveGate({ children }: { children: React.ReactNode }) {
   if (authenticated && !isConnected) {
     return (
       <section className="hero">
-        <p className="muted">Opening wallet…</p>
+        <ConnectBar />
       </section>
     );
   }
