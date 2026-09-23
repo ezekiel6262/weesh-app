@@ -49,3 +49,17 @@ export function orderMessage(o: Omit<RestingOrder, "id" | "signature" | "created
     nonce: o.nonce,
   };
 }
+
+/** Human amount the taker sends to fill this order at its limit. Bids are USDG; asks are shares. */
+export function takerPayHuman(
+  o: Pick<RestingOrder, "side" | "priceUsd" | "amount">,
+  stockDecimals: number
+): string {
+  const limit = Number(o.priceUsd);
+  const size = Number(o.amount);
+  if (!Number.isFinite(limit) || limit <= 0 || !Number.isFinite(size) || size <= 0) {
+    throw new Error("bad order size");
+  }
+  if (o.side === "sell") return (size * limit).toFixed(6);
+  return (size / limit).toFixed(stockDecimals);
+}

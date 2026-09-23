@@ -11,7 +11,7 @@ import { xlayer } from "@/lib/chain";
 import { executeRoutedSwap, impliedPx } from "@/lib/fill";
 import { routeQuote } from "@/lib/quote";
 import { money, shortAddr } from "@/lib/format";
-import { CANCEL_TYPES, ORDER_DOMAIN, ORDER_TYPES, type RestingOrder } from "@/lib/orderTypes";
+import { CANCEL_TYPES, ORDER_DOMAIN, ORDER_TYPES, takerPayHuman, type RestingOrder } from "@/lib/orderTypes";
 import { bumpBook } from "@/lib/tx";
 import type { Asset } from "@/lib/catalog";
 
@@ -122,10 +122,17 @@ export function MarketBook({ stock, last }: { stock: Asset; last: number | null 
     const pay = takerBuy ? QUOTE : stock;
     const get = takerBuy ? stock : QUOTE;
     const limit = Number(o.priceUsd);
-    const size = Number(o.amount);
-    const amountIn = takerBuy
-      ? parseUnits((size * limit).toFixed(6), 6)
-      : parseUnits(size.toFixed(8), stock.decimals);
+    let amountIn: bigint;
+    try {
+      amountIn = parseUnits(takerPayHuman(o, stock.decimals), pay.decimals);
+    } catch {
+      setErr("This order has a bad price or size");
+      return;
+    }
+    if (amountIn <= BigInt(0)) {
+      setErr("Size is too small to fill");
+      return;
+    }
     setErr(null);
     setTx(null);
     setStep("approve");
