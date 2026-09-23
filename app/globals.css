@@ -300,8 +300,12 @@ input, select, textarea {
 textarea { min-height: 120px; resize: vertical; }
 .check { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
 .check input { width: auto; }
-.send-links { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-.send-links a.mono { word-break: break-all; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+.send-links { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 12px; }
+.send-links li { border-top: 1px solid var(--line); padding-top: 12px; }
+.send-person { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tag.wallet { color: var(--muted); background: var(--wash); }
+.send-result h2 { margin: 0 0 8px; font-size: 28px; }
+.chip { cursor: pointer; }
 .amount {
   display: flex;
   gap: 8px;
@@ -502,15 +506,19 @@ textarea { min-height: 120px; resize: vertical; }
     border-top: 1px solid var(--line);
     padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
     z-index: 10;
-    justify-content: space-around;
+    gap: 4px;
+    overflow-x: auto;
+    justify-content: flex-start;
   }
   .tabbar a {
     text-decoration: none;
     color: var(--faint);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    padding: 8px 6px;
+    padding: 8px 12px;
     border-radius: 10px;
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
   .tabbar a.on { color: var(--ink); background: var(--wash); }
   .shell { padding-bottom: 96px; }

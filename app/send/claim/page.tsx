@@ -8,6 +8,7 @@ import { ConnectBar } from "@/components/Connect";
 import { xlayer } from "@/lib/chain";
 import { byAddress } from "@/lib/catalog";
 import { DROP_READY, WEESH_DROP, dropAbi } from "@/lib/drop";
+import { qty, shortAddr } from "@/lib/format";
 import { txUrl } from "@/lib/tx";
 
 function ClaimInner() {
@@ -24,6 +25,7 @@ function ClaimInner() {
   const idOk = /^\d+$/.test(drop);
   const indexOk = /^\d+$/.test(index);
   const secretOk = /^0x[0-9a-fA-F]{64}$/.test(secret);
+  const linkOk = DROP_READY && idOk && indexOk && secretOk;
 
   const info = useReadContract({
     address: DROP_READY ? WEESH_DROP : undefined,
@@ -41,24 +43,25 @@ function ClaimInner() {
   });
 
   useEffect(() => {
-    if (secretOk) {
-      const url = new URL(window.location.href);
-      if (url.searchParams.has("k")) {
-        url.searchParams.delete("k");
-        window.history.replaceState(null, "", url.pathname + "?" + url.searchParams.toString());
-      }
-    }
+    if (!secretOk) return;
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("k")) return;
+    url.searchParams.delete("k");
+    window.history.replaceState(null, "", `${url.pathname}?${url.searchParams.toString()}`);
   }, [secretOk]);
 
   const tokenAddr = info.data?.[1];
+  const sender = info.data?.[0];
+  const gift = info.data?.[3] || "A stock is waiting";
   const stock = tokenAddr && isAddress(tokenAddr) ? byAddress.get(tokenAddr.toLowerCase()) : undefined;
   const amount = slot.data?.[1];
-  const paid = slot.data?.[2];
-  const claimable = slot.data?.[3];
+  const paid = Boolean(slot.data?.[2]);
+  const claimable = Boolean(slot.data?.[3]);
   const ready = isConnected && chainId === xlayer.id;
+  const done = Boolean(hash) || (paid && !claimable);
 
   async function claim() {
-    if (!secretOk || !idOk || !indexOk) return;
+    if (!linkOk) return;
     setBusy(true);
     setErr(null);
     try {
@@ -77,32 +80,35 @@ function ClaimInner() {
   }
 
   return (
-    <section className="card">
-      <h1 className="display">{info.data?.[3] || "A stock is waiting"}</h1>
-      {!DROP_READY || !idOk || !indexOk || !secretOk ? (
-        <p className="err">This claim link is incomplete. Ask the sender for a new one.</p>
+    <section className="hero">
+      <p className="kicker">{done ? "In your wallet" : "A gift"}</p>
+      <h1>{gift}</h1>
+      {!linkOk ? (
+        <p className="lede">This link is incomplete. Ask the sender for a new one.</p>
       ) : (
         <>
-          <p>
-            {amount != null ? formatUnits(amount, stock?.decimals ?? 18) : "…"} {stock?.name || "shares"}
-            {paid ? " · already claimed" : claimable ? " · ready to claim" : ""}
+          <p className="nav-usd">{amount != null ? qty(amount, stock?.decimals ?? 18) : "…"}</p>
+          <p className="lede">
+            {stock?.name || "Shares"}
+            {sender ? ` from ${shortAddr(sender)}` : ""}. They move into the wallet you connect.
           </p>
-          <p className="muted">The shares move into the wallet you connect. Weesh does not hold them.</p>
+          {done ? (
+            <p className="ok">{hash ? "Claimed." : "These shares were already claimed."}</p>
+          ) : null}
           {hash ? (
             <p>
               <a href={txUrl(hash)} target="_blank" rel="noreferrer">
-                Claim sent
+                View the transaction
               </a>
             </p>
           ) : null}
-          {!ready ? (
-            <ConnectBar />
-          ) : (
-            <button className="btn accent" disabled={busy || paid || !claimable} onClick={claim}>
-              {busy ? "Claiming" : paid ? "Already claimed" : "Claim"}
+          {!done && !ready ? <ConnectBar /> : null}
+          {!done && ready ? (
+            <button className="btn accent" disabled={busy || !claimable} onClick={claim}>
+              {busy ? "Waiting for your signature" : `Claim ${stock?.name || "shares"}`}
             </button>
-          )}
-          {address ? <p className="muted">Claiming to {address}</p> : null}
+          ) : null}
+          {address && !done ? <p className="muted">Into {shortAddr(address)}</p> : null}
           {err ? <p className="err">{err}</p> : null}
         </>
       )}
@@ -112,7 +118,7 @@ function ClaimInner() {
 
 export default function ClaimPage() {
   return (
-    <Suspense fallback={<section className="card">Opening the claim…</section>}>
+    <Suspense fallback={<section className="hero">Opening the gift…</section>}>
       <ClaimInner />
     </Suspense>
   );
