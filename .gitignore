@@ -43,3 +43,8 @@ next-env.d.ts
 
 # Weesh order book
 /data
+
+# drop contract toolchain
+/contracts/node_modules
+/contracts/cache
+/contracts/artifacts

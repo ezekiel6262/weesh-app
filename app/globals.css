@@ -289,7 +289,7 @@ a.pill { text-decoration: none; color: inherit; }
 }
 .card.accent-edge { border-top: 3px solid var(--accent); }
 label { display: block; font-size: 12px; color: var(--muted); margin: 12px 0 4px; font-weight: 600; }
-input, select {
+input, select, textarea {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--line);
@@ -297,6 +297,11 @@ input, select {
   border-radius: 10px;
   font: inherit;
 }
+textarea { min-height: 120px; resize: vertical; }
+.check { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.check input { width: auto; }
+.send-links { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.send-links a.mono { word-break: break-all; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
 .amount {
   display: flex;
   gap: 8px;

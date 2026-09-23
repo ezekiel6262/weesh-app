@@ -13,6 +13,7 @@ const NAV = [
   { href: "/trade", label: "Trade" },
   { href: "/earn", label: "Earn" },
   { href: "/strategy", label: "Strategy" },
+  { href: "/send", label: "Send" },
   { href: "/settings", label: "Settings" },
 ];
 
@@ -32,7 +33,7 @@ export function Shell({ children }: { children: ReactNode }) {
               key={n.href}
               href={n.href}
               className={
-                path === n.href || (n.href === "/markets" && path.startsWith("/s/")) ? "on" : ""
+                path === n.href || (n.href === "/markets" && path.startsWith("/s/")) || (n.href === "/send" && path.startsWith("/send")) ? "on" : ""
               }
             >
               {n.label}

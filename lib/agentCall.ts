@@ -33,6 +33,16 @@ export function humanUsdt(amount: string): string {
   return n.toLocaleString("en-US", { maximumFractionDigits: 6 });
 }
 
+/** Base64 of UTF-8 bytes. `btoa` rejects anything outside Latin-1, including the ₮ in USD₮0. */
+export function utf8ToBase64(value: string): string {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
+}
+
 function isAddress(v: string): v is `0x${string}` {
   return /^0x[a-fA-F0-9]{40}$/.test(v);
 }

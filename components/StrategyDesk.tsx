@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useAccount, useSignTypedData } from "wagmi";
 import { ConnectBar } from "@/components/Connect";
-import { humanUsdt, type PaymentTerms } from "@/lib/agentCall";
+import { humanUsdt, utf8ToBase64, type PaymentTerms } from "@/lib/agentCall";
 import { xlayer } from "@/lib/chain";
 import { money } from "@/lib/format";
 import {
@@ -249,7 +249,7 @@ function AgentCard({ agent }: { agent: ListedAgent }) {
           },
         },
       };
-      const payment = btoa(JSON.stringify(payload));
+      const payment = utf8ToBase64(JSON.stringify(payload));
       await ask(payment);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Payment was not signed");

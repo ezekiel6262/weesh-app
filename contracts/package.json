@@ -1,0 +1,11 @@
+{
+  "name": "weesh-drop",
+  "private": true,
+  "scripts": {
+    "test": "hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
+    "hardhat": "^2.26.0"
+  }
+}
