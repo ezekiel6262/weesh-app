@@ -18,7 +18,7 @@ const display = Newsreader({
 
 export const metadata: Metadata = {
   title: "Weesh — Own stocks. Use DeFi.",
-  description: "Buy tokenized stocks on X Layer. Lend, borrow, and park cash from the same book. You sign. Weesh never holds the keys.",
+  description: "Buy tokenized stocks on X Layer. Lend, park cash, or hand the same job to an agent listed on OKX AI. You sign. Weesh never holds the keys.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

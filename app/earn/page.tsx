@@ -122,7 +122,7 @@ function SparkCard() {
   }
 
   return (
-    <div className="card">
+    <div className="card" id="spark">
       <p className="kicker">Spark</p>
       <h2>Park cash</h2>
       <p className="muted">Spark Savings on X Layer. Deposit is USDT. You keep the vault shares.</p>
@@ -250,7 +250,7 @@ function AaveCard() {
   }
 
   return (
-    <div className="card">
+    <div className="card" id="aave">
       <p className="kicker">Aave</p>
       <h2>Lend and borrow</h2>
       <p className="muted">Aave V3 on X Layer. Listed stables only.</p>
@@ -467,7 +467,7 @@ function LpCard() {
   const stockBal = lines.find((l) => l.asset.id === stock.id)?.wallet ?? BigInt(0);
 
   return (
-    <div className="card">
+    <div className="card" id="lp">
       <p className="kicker">Uniswap</p>
       <h2>Provide liquidity</h2>
       <p className="muted">

@@ -447,6 +447,24 @@ input, select {
 }
 .search-pop a:hover { background: var(--wash); }
 .search-pop span { color: var(--muted); }
+.strategy { display: grid; grid-template-columns: 240px 1fr; gap: 22px; margin-top: 22px; align-items: start; }
+.job-list { display: flex; flex-direction: column; gap: 8px; }
+.job-list button {
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--ink);
+}
+.job-list button.on { border-color: var(--ink); }
+.job-list strong { display: block; }
+.job-list span { display: block; color: var(--muted); font-size: 13px; margin-top: 4px; }
+.agent-card { margin-top: 12px; }
+.agent-head { display: flex; gap: 12px; align-items: center; }
+.agent-head img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; background: var(--wash); }
+.answer { margin-top: 12px; background: var(--wash); border-radius: 12px; padding: 12px 14px; }
+.answer pre { white-space: pre-wrap; font: inherit; margin: 8px 0 0; color: var(--muted); }
 .book-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
 .book-row {
   display: grid;
@@ -458,7 +476,7 @@ input, select {
   border-bottom: 1px solid var(--line);
 }
 @media (max-width: 800px) {
-  .book-cols { grid-template-columns: 1fr; }
+  .book-cols, .strategy { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 800px) {
@@ -486,7 +504,7 @@ input, select {
     color: var(--faint);
     font-size: 11px;
     font-weight: 700;
-    padding: 8px 12px;
+    padding: 8px 6px;
     border-radius: 10px;
   }
   .tabbar a.on { color: var(--ink); background: var(--wash); }
