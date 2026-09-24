@@ -32,11 +32,11 @@ function SetupHint() {
   );
 }
 
-export function ConnectBar({ compact = false }: { compact?: boolean }) {
+export function ConnectBar({ compact = false, start = false }: { compact?: boolean; start?: boolean }) {
   if (!privyAppId) {
     return compact ? <span className="pill">No wallet ID</span> : <SetupHint />;
   }
-  return <LiveConnect compact={compact} />;
+  return <LiveConnect compact={compact} start={start} />;
 }
 
 function Opening({ compact, logout }: { compact: boolean; logout: () => void }) {
@@ -58,7 +58,7 @@ function Opening({ compact, logout }: { compact: boolean; logout: () => void }) 
   );
 }
 
-function LiveConnect({ compact }: { compact: boolean }) {
+function LiveConnect({ compact, start = false }: { compact: boolean; start?: boolean }) {
   const { ready, authenticated, logout } = usePrivy();
   const { address, isConnected, chainId } = useAccount();
   const { switchChain } = useSwitchChain();
@@ -117,7 +117,7 @@ function LiveConnect({ compact }: { compact: boolean }) {
           Switch to X Layer
         </button>
       ) : (
-        <Link href="/settings" className="pill" title="Wallet settings">
+        <Link href="/settings" className="pill addr" title="Wallet settings">
           {shortAddr(address)}
         </Link>
       );
@@ -164,7 +164,7 @@ function LiveConnect({ compact }: { compact: boolean }) {
   );
 
   const form = (
-    <div className="wallet-list" style={{ maxWidth: compact ? 280 : 360 }}>
+    <div className={start ? "start-row" : "wallet-list"} style={start ? undefined : { maxWidth: compact ? 280 : 360 }}>
       <label>Email</label>
       <input
         value={email}
@@ -197,7 +197,7 @@ function LiveConnect({ compact }: { compact: boolean }) {
           </>
         ) : (
           <button className="btn primary" disabled={!canSend} onClick={() => void send()}>
-            {sending ? "Sending…" : "Send code"}
+            {sending ? "Sending…" : start ? "Get started" : "Email me a code"}
           </button>
         )}
       </div>
@@ -213,8 +213,8 @@ function LiveConnect({ compact }: { compact: boolean }) {
   if (compact) {
     return (
       <div className="connect-wrap" ref={wrapRef}>
-        <button className="btn primary small" onClick={() => setOpen((v) => !v)}>
-          Connect
+        <button className="btn primary" onClick={() => setOpen((v) => !v)}>
+          Sign in
         </button>
         {open ? (
           <div className="connect-panel">

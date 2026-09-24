@@ -18,7 +18,7 @@ export function MarketsList({
   compact?: boolean;
 }) {
   const [q, setQ] = useState("");
-  const [showClosed, setShowClosed] = useState(!compact);
+  const [group, setGroup] = useState<"uni" | "okx" | "closed">("uni");
   const needle = q.trim().toLowerCase();
 
   const match = (m: Market) =>
@@ -44,94 +44,62 @@ export function MarketsList({
   const uniShow = compact && !needle ? uni.slice(0, 8) : uni;
   const okxShow = compact && !needle ? okx.slice(0, 8) : okx;
 
+  const searching = needle.length > 0;
+  const rows = searching ? [...uni, ...okx, ...closed] : group === "uni" ? uniShow : group === "okx" ? okxShow : closed;
+  const note = searching
+    ? null
+    : group === "okx"
+      ? "No Uniswap pool. OKX DEX quotes these when a maker will fill."
+      : group === "closed"
+        ? "Issued on X Layer but nobody is making a market yet. You can still ask for a quote."
+        : null;
+
   return (
     <>
-      <div className="amount" style={{ marginBottom: 12 }}>
+      <div className="market-tools">
+        <div className="seg">
+          {(
+            [
+              ["uni", "Uniswap"],
+              ["okx", "OKX DEX"],
+              ["closed", "No pool"],
+            ] as const
+          ).map(([id, label]) => (
+            <button key={id} type="button" className={!searching && group === id ? "on" : ""} onClick={() => { setGroup(id); setQ(""); }}>
+              {label}
+            </button>
+          ))}
+        </div>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search NVIDIA, Tesla, SHEIN…"
+          placeholder="Search NVIDIA, Tesla…"
         />
       </div>
-      {loading ? <p className="muted">Reading Uniswap and OKX DEX…</p> : null}
-      <p className="section-title">On Uniswap · {available.filter((m) => m.reason === "live").length}</p>
-      <div className="rows">
-        {uniShow.map((m) => (
-          <Link key={m.id} href={stockPath(m.id)} className="row-link">
-            <Mark asset={toAsset(m)} />
-            <div>
-              <div className="name">{m.name}</div>
-              <div className="sym">{m.symbol}</div>
-            </div>
-            <div className="r px">{m.px ? money(m.px) : "—"}</div>
-            <div className="r">
-              <span className="btn small">Buy</span>
-            </div>
-          </Link>
-        ))}
-        {!loading && uniShow.length === 0 ? <p className="muted">No Uniswap pool matches.</p> : null}
-      </div>
-      <p className="section-title">On OKX DEX · {available.filter((m) => m.reason === "okx").length}</p>
-      <p className="muted">No Uniswap pool. Quote comes from OKX DEX (aggregator + RFQ) if a maker fills.</p>
-      <div className="rows">
-        {okxShow.map((m) => (
-          <Link key={m.id} href={stockPath(m.id)} className="row-link">
-            <Mark asset={toAsset(m)} />
-            <div>
-              <div className="name">{m.name}</div>
-              <div className="sym">{m.symbol} · OKX DEX</div>
-            </div>
-            <div className="r px">RFQ</div>
-            <div className="r">
-              <span className="btn small">Buy</span>
-            </div>
-          </Link>
-        ))}
-        {!loading && okxShow.length === 0 ? (
-          <p className="muted">No OKX DEX matches — try a quote on Trade anyway.</p>
-        ) : null}
-      </div>
-      {compact && !needle ? (
-        <p className="actions">
-          <Link href="/markets" className="btn ghost">
-            All markets
-          </Link>
-        </p>
-      ) : null}
-
-      <p className="section-title">
-        Issued, no fill yet · {unavailable.length}
-        {compact ? (
-          <>
-            {" "}
-            <button className="btn ghost small" onClick={() => setShowClosed((v) => !v)}>
-              {showClosed ? "Hide" : "Show"}
-            </button>
-          </>
-        ) : null}
-      </p>
-      {showClosed ? (
-        <div className="rows">
-          {(compact && !needle ? closed.slice(0, 12) : closed).map((m) => (
-            <Link key={m.id} href={stockPath(m.id)} className="row-link dim">
+      <div className="hold-card">
+        {loading ? <p className="muted" style={{ padding: "16px 20px" }}>Reading Uniswap and OKX DEX…</p> : null}
+        {rows.map((m) => {
+          const quote = m.reason === "okx";
+          const closedRow = m.reason === "no-pool" || m.reason === "halted";
+          return (
+            <Link key={m.id} href={stockPath(m.id)} className="tape-row" style={closedRow ? { opacity: 0.55 } : undefined}>
               <Mark asset={toAsset(m)} />
-              <div>
-                <div className="name">{m.name}</div>
-                <div className="sym">{m.symbol} · try OKX DEX quote</div>
-              </div>
-              <div className="r px">—</div>
-              <div className="r">
-                <span className="tag debt">{m.reason === "halted" ? "halted" : "no book"}</span>
-              </div>
+              <span>
+                <span className="name" style={{ display: "block", fontWeight: 600 }}>{m.name}</span>
+                <span className="sym">{m.symbol}{quote ? " · OKX DEX" : ""}</span>
+              </span>
+              <span style={{ textAlign: "right", fontVariantNumeric: "tabular-nums", color: closedRow ? "var(--faint)" : undefined }}>
+                {m.reason === "halted" ? "Halted" : quote ? "Quote" : m.px ? money(m.px) : "—"}
+              </span>
+              <span className={`chg ${m.change24 != null && m.change24 < 0 ? "err" : "ok"}`}>
+                {m.change24 == null ? "" : `${m.change24 >= 0 ? "+" : "−"}${Math.abs(m.change24).toFixed(2)}%`}
+              </span>
             </Link>
-          ))}
-        </div>
-      ) : (
-        <p className="muted">
-          {unavailable.length} xStocks are issued on X Layer with no Uniswap pool and are not on
-          the OKX DEX token list. Trade can still ask OKX DEX for a quote. We do not invent a price.
-        </p>
-      )}
+          );
+        })}
+        {!loading && rows.length === 0 ? <p className="muted" style={{ padding: "24px 20px" }}>Nothing matches “{q}”.</p> : null}
+      </div>
+      {note ? <p className="hint">{note}</p> : null}
     </>
   );
 }

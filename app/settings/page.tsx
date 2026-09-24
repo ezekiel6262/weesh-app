@@ -35,14 +35,8 @@ function Settings() {
   }
 
   return (
-    <>
-      <p className="kicker">Settings</p>
-      <h2>Your wallet</h2>
-      <p className="muted">
-        {embedded
-          ? "Weesh never holds keys. This address is yours — email login recovers it on any device."
-          : "Weesh never holds keys. Backup lives in your extension or OKX Wallet."}
-      </p>
+    <div style={{ maxWidth: 640 }}>
+      <h1>Settings</h1>
       <div className="card" style={{ margin: "20px 0" }}>
         <label>Address</label>
         <p className="mono">{address}</p>
@@ -56,8 +50,12 @@ function Settings() {
           <button className="btn" onClick={copy}>
             {copied ? "Copied" : "Copy"}
           </button>
+          {email ? <span className="muted">Signed in with {email}</span> : null}
+          <button className="btn ghost" style={{ color: "var(--accent)" }} onClick={() => logout()}>
+            Sign out
+          </button>
           <a className="btn ghost" href={addrUrl(address ?? "")} target="_blank" rel="noreferrer">
-            View on explorer
+            View on X Layer explorer ↗
           </a>
         </div>
       </div>
@@ -72,9 +70,6 @@ function Settings() {
           <div className="actions">
             <button className="btn primary" onClick={() => void exportWallet()}>
               Export private key
-            </button>
-            <button className="btn ghost" onClick={() => logout()}>
-              Sign out
             </button>
           </div>
         </>
@@ -107,6 +102,6 @@ function Settings() {
         Weesh fee. Weesh covers gas so you do not hold OKB.{" "}
         <a href="/about">What’s an xStock?</a>
       </p>
-    </>
+    </div>
   );
 }

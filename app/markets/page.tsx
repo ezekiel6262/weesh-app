@@ -7,13 +7,9 @@ export default function MarketsPage() {
   const { available, unavailable, loading, error, total } = useMarkets();
   return (
     <>
-      <p className="kicker">Markets</p>
-      <h2>Every xStock on X Layer</h2>
-      <p className="muted">
-        {loading
-          ? "Loading…"
-          : `${available.filter((m) => m.reason === "live").length} Uniswap · ${available.filter((m) => m.reason === "okx").length} OKX DEX · ${unavailable.length} no fill · ${total} issued`}
-        . Live prices are Uniswap. If there is no pool, Weesh says so.
+      <h1>Markets</h1>
+      <p className="page-lede">
+        {loading ? "Loading…" : `${total} xStocks on X Layer. Prices come from Uniswap; the rest are quoted on request.`}
       </p>
       {error ? <p className="err">{error}</p> : null}
       <div style={{ marginTop: 24 }}>

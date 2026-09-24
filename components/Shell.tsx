@@ -5,17 +5,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectBar } from "./Connect";
 import { GasCover } from "./GasCover";
-import { HeaderSearch } from "./Search";
 
 const NAV = [
-  { href: "/", label: "Dashboard" },
-  { href: "/markets", label: "Markets" },
-  { href: "/trade", label: "Trade" },
-  { href: "/earn", label: "Earn" },
-  { href: "/strategy", label: "Strategy" },
-  { href: "/send", label: "Send" },
-  { href: "/settings", label: "Settings" },
+  { href: "/", label: "Dashboard", mobile: "Home" },
+  { href: "/markets", label: "Markets", mobile: "Markets" },
+  { href: "/trade", label: "Trade", mobile: "Trade" },
+  { href: "/earn", label: "Earn", mobile: "Earn" },
+  { href: "/strategy", label: "Strategy", mobile: "Strategy" },
+  { href: "/send", label: "Send", mobile: "Send" },
 ];
+
+function on(path: string, href: string) {
+  if (href === "/") return path === "/";
+  if (href === "/markets") return path === "/markets" || path.startsWith("/s/");
+  if (href === "/send") return path.startsWith("/send");
+  return path === href || path.startsWith(`${href}/`);
+}
+
+export function Logo() {
+  return (
+    <svg viewBox="0 0 32 32" className="brand-mark" aria-hidden>
+      <rect width="32" height="32" rx="8" fill="#D6452A" />
+      <polyline points="5.5,16.5 9.5,22 16,10.5" fill="none" stroke="#F6F3EC" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points="13,16.5 17,22 26.5,8.5" fill="none" stroke="#F6F3EC" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export function Shell({ children }: { children: ReactNode }) {
   const path = usePathname();
@@ -23,41 +38,32 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="shell">
       <GasCover />
       <header className="top">
-        <Link href="/" className="brand">
-          <span className="brand-mark">W</span>
-          Weesh
-        </Link>
-        <nav className="top-nav">
-          {NAV.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className={
-                path === n.href || (n.href === "/markets" && path.startsWith("/s/")) || (n.href === "/send" && path.startsWith("/send")) ? "on" : ""
-              }
-            >
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-        <HeaderSearch />
-        <ConnectBar compact />
+        <div className="top-inner">
+          <Link href="/" className="brand">
+            <Logo />
+            Weesh
+          </Link>
+          <nav className="top-nav">
+            {NAV.map((n) => (
+              <Link key={n.href} href={n.href} className={on(path, n.href) ? "on" : ""}>
+                {n.label}
+              </Link>
+            ))}
+          </nav>
+          <ConnectBar compact />
+        </div>
       </header>
       <main>{children}</main>
       <footer className="foot">
-        <span>Non-custodial. Weesh covers gas. 0.05% on trades. <Link href="/about">What’s an xStock?</Link></span>
+        <span>
+          Non-custodial. Weesh covers gas. 0.05% on trades. <Link href="/about">What’s an xStock?</Link>
+        </span>
         <span>X Layer · xStocks</span>
       </footer>
       <nav className="tabbar">
         {NAV.map((n) => (
-          <Link
-            key={n.href}
-            href={n.href}
-            className={
-              path === n.href || (n.href === "/markets" && path.startsWith("/s/")) ? "on" : ""
-            }
-          >
-            {n.label}
+          <Link key={n.href} href={n.href} className={on(path, n.href) ? "on" : ""}>
+            {n.mobile}
           </Link>
         ))}
       </nav>
