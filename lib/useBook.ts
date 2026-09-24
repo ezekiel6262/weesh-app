@@ -115,7 +115,7 @@ export function useBook() {
           setLp(positions);
         }
       } catch (e) {
-        if (!dead) setError(e instanceof Error ? e.message : "Could not load book");
+        if (!dead) setError(e instanceof Error ? e.message : "Could not load the dashboard");
       } finally {
         if (!dead) setLoading(false);
       }

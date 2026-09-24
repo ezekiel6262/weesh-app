@@ -101,7 +101,7 @@ function Book() {
     <>
       <div className="book-head">
         <div>
-          <p className="kicker">Your book</p>
+          <p className="kicker">Dashboard</p>
           <p className="nav-usd">{loading && holdings.length === 0 ? "…" : money(nav)}</p>
           {dayPct != null && !empty ? (
             <p className={dayPct >= 0 ? "ok" : "err"} style={{ margin: "6px 0 0" }}>

@@ -8,7 +8,7 @@ import { GasCover } from "./GasCover";
 import { HeaderSearch } from "./Search";
 
 const NAV = [
-  { href: "/", label: "Book" },
+  { href: "/", label: "Dashboard" },
   { href: "/markets", label: "Markets" },
   { href: "/trade", label: "Trade" },
   { href: "/earn", label: "Earn" },

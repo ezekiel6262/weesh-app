@@ -35,7 +35,7 @@ export default function AboutPage() {
           Open NVIDIA
         </Link>
         <Link className="btn ghost" href="/">
-          Back to book
+          Back to dashboard
         </Link>
       </p>
     </>

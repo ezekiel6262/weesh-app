@@ -34,7 +34,7 @@ function Trade() {
     <div className="grid">
       <div>
         <p className="kicker">Trade</p>
-        <p className="muted">Pick a name, or open it from Book / Markets for the full stock page.</p>
+        <p className="muted">Pick a name, or open it from Dashboard / Markets for the full stock page.</p>
         <TradeTicket
           stockId={stockId}
           onStockId={setStockId}
