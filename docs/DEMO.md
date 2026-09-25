@@ -4,7 +4,7 @@
 
 “Tokenized stocks usually behave like a trading page: you buy, then the story ends. Weesh makes them usable. It is a non-custodial brokerage on X Layer where a stock stays in your wallet and can move through onchain products.”
 
-Show the landing page and the live market list.
+Show the landing page, the social-portfolio proposition, and the live market list.
 
 ## 0:20–1:05 — Buy
 
@@ -23,6 +23,8 @@ Return to Dashboard. Show the dollar NAV, stock/cash/earning allocation, NVIDIA 
 
 Say: “The Book combines wallet balances with supported Spark, Aave, debt, and Uniswap LP positions.”
 
+If useful, point out that wallet balances render first on slower mobile connections while market prices and DeFi positions continue loading.
+
 ## 1:35–2:10 — Public portfolios
 
 1. Open Portfolios and select a public strategy.
@@ -31,6 +33,8 @@ Say: “The Book combines wallet balances with supported Spark, Aave, debt, and 
 4. Enter a small amount under Replicate and show the allocation preview.
 
 Say: “This is not custodial copy trading. Following moves no money. Replicate turns a public allocation into routed trades, and the follower approves every transaction from their own wallet.”
+
+Add: “If the user holds a different supported stablecoin, Weesh prepares the required dollar conversion rather than making them diagnose the token mismatch.”
 
 ## 2:10–2:35 — Send a stock
 
@@ -48,7 +52,7 @@ Say: “A wallet is paid immediately. Someone without an address receives a priv
 
 Open Strategy. Show the $100 stock-mix planner and one listed verification or yield service.
 
-Say: “OKX AI specialists can analyze a trade or yield opportunity, including paid services, but agents do not control execution. The wallet still signs.”
+Say: “OKX AI specialists can analyze a portfolio, trade, or yield opportunity, including paid services. Weesh shows the response and any requested payment, but agents never control execution. The wallet still signs.”
 
 ## 2:50–3:00 — Close
 

@@ -2,7 +2,7 @@
 
 ## Project
 
-**Weesh — stocks you can actually use**
+**Weesh — build a portfolio, share the strategy, keep the keys**
 
 Primary track: **Build a Market**  
 Product: https://weesh-app.vercel.app  
@@ -10,7 +10,7 @@ Repository: https://github.com/ezekiel6262/weesh-app
 
 ## Short summary
 
-Weesh is a non-custodial brokerage for tokenized stocks on X Layer. Users can buy xStocks with USDG, view stocks and DeFi positions in one book, send fractional shares directly or through a private claim link, and put idle stablecoins to work. Every asset-moving action remains user-signed.
+Weesh is an AI-assisted social investing app for tokenized stocks and onchain assets on X Layer. Users can trade xStocks, earn on idle stablecoins, publish public or private strategies, and let others follow or replicate an allocation from their own wallet. Every asset-moving action remains user-signed.
 
 ## Intended user
 
@@ -25,10 +25,12 @@ A consumer who wants brokerage simplicity without giving up wallet ownership or 
 - Spark and Aave for idle stablecoin utility
 - OKX AI listed services for strategy analysis and x402-style paid calls
 - WeeshPortfolioRegistry for public allocations, follows, and discussion without custody
+- Automatic routing between supported stablecoins when a workflow requires a different dollar token
+- Gas-covered supported actions and resilient X Layer RPC fallback for a consumer-grade mobile experience
 
 ## What is distinctive
 
-The product does not end after a stock purchase. The same asset can be held, verified, sent fractionally, gifted through a claim link, composed with other X Layer financial activity, or published as part of a portfolio others can follow and replicate. The wallet stays in control throughout.
+The product does not end after a stock purchase. The same asset can be held, verified, sent fractionally, gifted through a claim link, composed with other X Layer financial activity, or published as part of a strategy others can discover and replicate. Weesh also removes common onboarding friction by covering supported gas flows and routing available stablecoins toward the asset a workflow needs. The wallet stays in control throughout.
 
 Public and unlisted portfolios are recorded on X Layer. Private portfolios stay only in local browser storage because private content should not be written to a public chain. Replication converts target weights into routed trades, but the follower chooses the amount and signs every leg; following alone never grants trading authority.
 
@@ -43,7 +45,7 @@ Public and unlisted portfolios are recorded on X Layer. Private portfolios stay 
 7. Show the WeeshDrop contract and transaction on OKLink.
 8. Open Portfolios, inspect an allocation, verify the creator’s holdings, and share its public link.
 9. Replicate it with a follower-selected amount and show that every routed trade remains user-signed.
-10. Open Strategy and demonstrate an OKX AI verification service.
+10. Open Strategy, call an OKX AI specialist, and show that the user reviews any requested payment before authorizing it.
 
 ## Technical proof
 

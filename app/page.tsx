@@ -33,9 +33,9 @@ function MarketingHome() {
         <div className="marketing-nav-inner">
           <Link href="/" className="brand"><Logo />Weesh</Link>
           <nav aria-label="Homepage">
-            <a href="#xstocks">xStocks</a>
-            <a href="#product">The app</a>
-            <Link href="/strategy">Strategy</Link>
+            <a href="#product">Product</a>
+            <a href="#portfolios">Portfolios</a>
+            <a href="#ai">OKX AI</a>
             <a href="#limits">What we don’t do</a>
           </nav>
           <Link className="btn primary" href="/app">Open app</Link>
@@ -44,13 +44,13 @@ function MarketingHome() {
 
       <section className="marketing-hero">
         <div>
-          <h1>Own stocks. Use them. Keep the keys.</h1>
-          <p className="lede">Weesh is a brokerage for tokenized stocks on X Layer. Buy NVIDIA or the S&amp;P 500 with dollars, then hold, earn, or give shares away. Weesh builds each transaction. You sign it.</p>
+          <h1>Build a portfolio. Share the strategy. Keep the keys.</h1>
+          <p className="lede">Weesh is an AI-assisted social investing app for tokenized stocks and onchain assets on X Layer. Buy, earn, publish a portfolio, and let anyone replicate your allocation from their own wallet.</p>
           <div className="actions">
-            <Link className="btn primary marketing-cta" href="/app">Get started</Link>
-            <a className="btn ghost marketing-cta" href="#product">See how it works</a>
+            <Link className="btn primary marketing-cta" href="/app">Open Weesh</Link>
+            <Link className="btn ghost marketing-cta" href="/portfolios">Explore portfolios</Link>
           </div>
-          <p className="hint">Same wallet on every device · OKX Wallet works too · Not available to US persons</p>
+          <p className="hint">Non-custodial · User-signed execution · Gas covered by Weesh · Not available to US persons</p>
         </div>
         <div className="marketing-mock" aria-label="Weesh trade preview">
           <div className="mock-ticket">
@@ -73,18 +73,20 @@ function MarketingHome() {
         <div><p className="section-lede">It follows a stock or ETF and is backed 1:1 by the issuer, Backed. It gives price exposure, but it is not a share and does not include voting rights.</p><dl className="definition-list"><div><dt>NVDAx</dt><dd>The issuer token. Its balance rebases as dividend equivalents are paid.</dd></div><div><dt>wNVDAx</dt><dd>The wrapped version traded through Uniswap and OKX DEX—the one Weesh buys.</dd></div></dl></div>
       </section>
 
-      <section className="marketing-dark" id="product"><div className="marketing-section"><h2>Buy the stock, then use it.</h2><p className="section-lede">One app, one wallet. Every position remains at your X Layer address.</p><div className="feature-rows">{[["Dashboard","Stocks, cash, and DeFi positions in one dollar-denominated book."],["Trade","Uniswap first, with OKX DEX routing when there is no pool."],["Earn","Park cash in Spark, lend on Aave, or provide Uniswap liquidity."],["Strategy","Build a plan yourself or ask a specialist listed on OKX AI."],["Send","Give fractional shares to wallets or through private claim links."]].map(([title,copy]) => <div key={title}><h3>{title}</h3><p>{copy}</p></div>)}</div></div></section>
+      <section className="marketing-dark" id="product"><div className="marketing-section"><h2>One wallet. A complete onchain investing loop.</h2><p className="section-lede">Weesh connects markets, yield, AI, and social portfolios while every asset remains at the user’s X Layer address.</p><div className="feature-rows">{[["Discover & trade","Buy tokenized stocks and RWAs through live Uniswap liquidity with OKX DEX routing when needed."],["One portfolio view","See wallet balances, stocks, stablecoins, Spark, Aave, debt, and Uniswap LP positions together."],["Automatic dollars","Weesh routes between supported stablecoins when an action needs a different dollar token."],["Earn","Put idle stablecoins to work through Spark, Aave, or Uniswap liquidity workflows."],["Send","Transfer fractional shares to a wallet or create a private claim link for someone new to crypto."]].map(([title,copy]) => <div key={title}><h3>{title}</h3><p>{copy}</p></div>)}</div></div></section>
 
-      <section className="marketing-section" id="strategy"><h2>Say the job. Keep the decision.</h2><p className="section-lede">Plan a stock mix or compare yield with an OKX AI specialist. Agents return analysis; your wallet still approves every action.</p><div className="strategy-example"><blockquote>“Park $500 I’m not using.”</blockquote><div><article><small>Sign it yourself</small><h3>Spark Savings · USDT</h3><p>One approval and one deposit. Spark holds the position.</p></article><article><small>Ask on OKX AI</small><h3>Sterling · Yield Ranker</h3><p>Compare onchain dollar yield before deciding what to sign.</p></article></div></div><div className="actions"><Link className="btn primary" href="/strategy">Explore strategies</Link><Link className="btn ghost" href="/portfolios">Browse public portfolios</Link></div></section>
+      <section className="marketing-section split" id="portfolios"><div><h2>Turn a market view into a portfolio people can follow.</h2><p className="section-lede">Create a public, unlisted, or private strategy with tokenized stocks and onchain assets. Public portfolios have a shareable page for the thesis, target allocation, verified holdings, followers, and discussion.</p><div className="actions"><Link className="btn primary" href="/portfolios/new">Create a portfolio</Link><Link className="btn ghost" href="/portfolios">Browse strategies</Link></div></div><div className="gift-example"><small>Public strategy</small><h3>X Layer Growth Basket</h3><p><span>NVIDIA</span><strong>40%</strong></p><p><span>S&amp;P 500</span><strong>35%</strong></p><p><span>Onchain dollars</span><strong>25%</strong></p><p><span>Execution</span><strong className="ok">Replicate from your wallet</strong></p></div></section>
+
+      <section className="marketing-section" id="ai"><h2>Ask an agent. Keep the decision.</h2><p className="section-lede">Use specialists listed on OKX AI to research a stock mix, verify a thesis, or compare yield. Weesh supports free and paid agent services, while the wallet owner approves every payment and market action.</p><div className="strategy-example"><blockquote>“Compare the risk and yield of this allocation.”</blockquote><div><article><small>Plan in Weesh</small><h3>Strategy builder</h3><p>Set an amount and turn an idea into a clear target allocation.</p></article><article><small>Ask on OKX AI</small><h3>Specialist analysis</h3><p>Call a listed agent, review its response, then decide what—if anything—to sign.</p></article></div></div><div className="actions"><Link className="btn primary" href="/strategy">Open AI strategy desk</Link><Link className="btn ghost" href="/portfolios">Explore public portfolios</Link></div></section>
 
       <section className="marketing-section split send-story"><div><h2>Give stock to anyone.</h2><p className="section-lede">Wallets receive shares immediately. Everyone else gets a private link, and unclaimed gifts return after 14 days.</p><Link href="/app" className="btn primary">Open Send</Link></div><div className="gift-example"><h3>Ada’s class · 0.1 SPY each</h3><p><span>0x4f2a…c9e1</span><strong className="ok">Paid</strong></p><p><span>ada@school.edu</span><strong>Claimed</strong></p><p><span>Leo</span><strong>12 days left</strong></p></div></section>
 
-      <section className="marketing-facts"><div><article><h3>No Weesh account</h3><p>Use an email wallet or connect OKX Wallet.</p></article><article><h3>No custody</h3><p>Weesh builds transactions. You sign them.</p></article><article><h3>0.05% a trade</h3><p>Shown before signing. Gas is covered.</p></article></div></section>
+      <section className="marketing-facts"><div><article><h3>Simple onboarding</h3><p>Use an embedded email wallet or connect OKX Wallet.</p></article><article><h3>No custody</h3><p>Weesh builds transactions. You review and sign them.</p></article><article><h3>No gas friction</h3><p>Fees are disclosed and supported actions can be gas-covered.</p></article></div></section>
 
       <section className="marketing-section split" id="limits"><div><h2>What Weesh doesn’t do</h2><p className="section-lede">Knowing the edges is part of the product.</p></div><div className="limit-list"><p><strong>Mint with the issuer.</strong> That requires Backed KYC.</p><p><strong>Borrow against stocks.</strong> xStocks are not Aave collateral on X Layer.</p><p><strong>Let agents move money.</strong> Agents analyze; you decide and sign.</p><p><strong>Invent assets.</strong> Send only moves real xStocks you hold.</p></div></section>
 
-      <section className="marketing-final"><div><h2>Open a brokerage with your wallet.</h2><Link className="btn primary" href="/app">Open app</Link></div></section>
-      <footer className="marketing-footer"><span><Logo />Weesh · xStocks on X Layer</span><p>Tokenized stocks are not available to US persons. Not investment advice. Protocols and agents are third parties.</p></footer>
+      <section className="marketing-final"><div><h2>Build your portfolio—and make the strategy worth following.</h2><Link className="btn primary" href="/app">Open Weesh</Link></div></section>
+      <footer className="marketing-footer"><span><Logo />Weesh · Social investing on X Layer</span><p>Tokenized stocks are not available to US persons. Not investment advice. Protocols and agents are third parties.</p></footer>
     </div>
   );
 }

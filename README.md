@@ -1,8 +1,8 @@
 # Weesh
 
-**Stocks you can actually use.**
+**Build a portfolio. Share the strategy. Keep the keys.**
 
-Weesh is a non-custodial consumer brokerage for tokenized stocks on X Layer. A user can buy an xStock, hold it in their own wallet, send a fraction to a wallet or private claim link, and put idle stablecoins to work in DeFi.
+Weesh is an AI-assisted social investing app for tokenized stocks and onchain assets on X Layer. Users can trade xStocks, earn on idle stablecoins, publish public or unlisted strategies, discuss them, and replicate an allocation from their own wallet without giving anyone trading authority.
 
 Live product: [weesh-app.vercel.app](https://weesh-app.vercel.app)
 
@@ -16,6 +16,7 @@ Most tokenized-stock products stop at trading or portfolio display. Weesh treats
 4. Park or lend idle stablecoins through Spark and Aave.
 5. Ask listed OKX AI specialists to analyze a strategy while the user retains signing control.
 6. Publish a portfolio on X Layer so others can follow, discuss, fork, or replicate it from their own wallet.
+7. Route between supported stablecoins when a trade, yield flow, or agent payment needs a different dollar token.
 
 ## Hackathon track
 
@@ -33,7 +34,8 @@ Weesh integrates tokenized stocks and real-world assets on X Layer, provides a l
 | Claim | Recipient connects a wallet and claims shares from the X Layer contract |
 | Earn | Spark savings, Aave lending/borrowing, and Uniswap V3 liquidity |
 | Portfolios | Public/unlisted/private allocations, verified holdings, follows, comments, sharing, and user-signed replication |
-| Strategy | Self-directed allocation tools plus listed OKX AI agent calls |
+| Strategy | Self-directed allocation tools plus free or paid services listed on OKX AI |
+| Dollar routing | Uses supported wallet stablecoins and prepares the conversion an action requires |
 
 ## Verifiable integration
 
@@ -41,6 +43,8 @@ Weesh integrates tokenized stocks and real-world assets on X Layer, provides a l
 - Stock gift contract: [`0x76960502d4d84381fab3ec48be229342631fc33f`](https://www.oklink.com/x-layer/address/0x76960502d4d84381fab3ec48be229342631fc33f)
 - Portfolio registry: [`0x0f66d0e9d1ca11955cc97a935a1e1ced95523e7d`](https://www.oklink.com/x-layer/address/0x0f66d0e9d1ca11955cc97a935a1e1ced95523e7d)
 - Trading: Uniswap V3 pools with OKX DEX aggregator/RFQ fallback
+- Stablecoin routing: automatic conversion planning across USDG, USDT, and USDC for supported actions
+- RPC resilience: official X Layer endpoints, fallback transport, partial balance rendering, and automatic retry
 - Wallet execution: every asset-moving action is signed by the user
 - Transaction proof: successful actions link to OKLink from the product
 
@@ -56,6 +60,9 @@ Weesh never takes custody of the wallet, shares, stablecoins, LP NFTs, or agent 
 - Recurring stock sends to wallet recipients
 - Spark, Aave, and Uniswap LP workflows
 - OKX AI listed-agent discovery and paid/free service calls
+- Public, unlisted, and private portfolio strategies with follows, comments, sharing, verified holdings, and user-signed replication
+- Automatic stablecoin routing for trades, yield actions, and agent payments
+- Resilient mobile balance loading with progressive wallet-first rendering
 - Mobile navigation and submission-focused UX refinement
 
 The Git history documents these features and subsequent fixes.
@@ -65,9 +72,11 @@ The Git history documents these features and subsequent fixes.
 ```text
 User wallet
   ├─ Trade ───── Uniswap V3 / OKX DEX ───── xStocks
+  ├─ Dollars ─── Stablecoin routing ───────── required payment asset
   ├─ Send ────── WeeshDrop on X Layer ───── wallet or claim link
   ├─ Earn ────── Spark / Aave / Uniswap ─── protocol positions
-  └─ Strategy ── OKX AI listed services ─── analysis / x402 payment
+  ├─ Portfolio ─ Registry on X Layer ─────── follow / discuss / replicate
+  └─ Strategy ── OKX AI listed services ─── analysis / paid service
 
 Next.js on Vercel provides the interface and server-side API adapters.
 Private keys and asset custody remain outside Weesh.

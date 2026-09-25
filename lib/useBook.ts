@@ -57,19 +57,49 @@ export function useBook() {
           tradable: false,
         }));
         const watch: Asset[] = [USDG, USDT0, USDC, ...STOCKS, ...extras, ...AAVE_CRYPTO];
+
+        // Show wallet balances as soon as the first batched RPC read returns. Price
+        // discovery and DeFi position reads are much slower on a cold mobile
+        // connection and should not hold the headline balance hostage.
+        const balanceResults = await Promise.allSettled(
+          watch.map((a) =>
+            client.readContract({
+              address: a.address,
+              abi: erc20Abi,
+              functionName: "balanceOf",
+              args: [address],
+            }) as Promise<bigint>
+          )
+        );
+        const walletBalances = balanceResults.map((result) =>
+          result.status === "fulfilled" ? result.value : BigInt(0)
+        );
+        const readableBalances = balanceResults.filter((result) => result.status === "fulfilled").length;
+        if (readableBalances === 0) throw new Error("X Layer RPC unavailable");
+
+        const quickRows = watch.map((asset, index) => {
+          const wallet = walletBalances[index];
+          const px = asset.kind === "stable" ? 1 : 0;
+          return {
+            asset,
+            wallet,
+            aave: BigInt(0),
+            spark: BigInt(0),
+            debt: BigInt(0),
+            px,
+            usd: usdFrom(wallet, asset, px),
+          } satisfies Line;
+        });
+        if (!dead) setLines(quickRows);
+
         const settled = await Promise.allSettled(
-          watch.map(async (a) => {
+          watch.map(async (a, index) => {
             const priced =
               a.kind === "stable"
                 ? a
                 : STOCKS.find((s) => s.underlying?.toLowerCase() === a.address.toLowerCase()) ?? a;
             const px = a.kind === "stable" ? 1 : await usdPrice(client, priced);
-            const wallet = (await client.readContract({
-              address: a.address,
-              abi: erc20Abi,
-              functionName: "balanceOf",
-              args: [address],
-            })) as bigint;
+            const wallet = walletBalances[index];
             let aave = BigInt(0);
             let debt = BigInt(0);
             if (a.aave) {
