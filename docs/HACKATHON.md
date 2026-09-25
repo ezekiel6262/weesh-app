@@ -24,10 +24,13 @@ A consumer who wants brokerage simplicity without giving up wallet ownership or 
 - WeeshDrop for direct transfers, claim links, and recurring stock gifts
 - Spark and Aave for idle stablecoin utility
 - OKX AI listed services for strategy analysis and x402-style paid calls
+- WeeshPortfolioRegistry for public allocations, follows, and discussion without custody
 
 ## What is distinctive
 
-The product does not end after a stock purchase. The same asset can be held, verified, sent fractionally, gifted through a claim link, or composed with other X Layer financial activity. The wallet stays in control throughout.
+The product does not end after a stock purchase. The same asset can be held, verified, sent fractionally, gifted through a claim link, composed with other X Layer financial activity, or published as part of a portfolio others can follow and replicate. The wallet stays in control throughout.
+
+Public and unlisted portfolios are recorded on X Layer. Private portfolios stay only in local browser storage because private content should not be written to a public chain. Replication converts target weights into routed trades, but the follower chooses the amount and signs every leg; following alone never grants trading authority.
 
 ## Working demo flow
 
@@ -38,11 +41,15 @@ The product does not end after a stock purchase. The same asset can be held, ver
 5. Open Send and create a fractional NVIDIA gift.
 6. Open the private claim link in a recipient session.
 7. Show the WeeshDrop contract and transaction on OKLink.
-8. Open Strategy and demonstrate the stock-mix planner plus an OKX AI verification service.
+8. Open Portfolios, inspect an allocation, verify the creator’s holdings, and share its public link.
+9. Replicate it with a follower-selected amount and show that every routed trade remains user-signed.
+10. Open Strategy and demonstrate an OKX AI verification service.
 
 ## Technical proof
 
 WeeshDrop: `0x76960502d4d84381fab3ec48be229342631fc33f`  
+WeeshPortfolioRegistry: `0x0f66d0e9d1ca11955cc97a935a1e1ced95523e7d`
+Explorer: https://www.oklink.com/x-layer/address/0x0f66d0e9d1ca11955cc97a935a1e1ced95523e7d
 Network: X Layer, chain ID `196`  
 Explorer: https://www.oklink.com/x-layer/address/0x76960502d4d84381fab3ec48be229342631fc33f
 

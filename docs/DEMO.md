@@ -23,7 +23,16 @@ Return to Dashboard. Show the dollar NAV, stock/cash/earning allocation, NVIDIA 
 
 Say: “The Book combines wallet balances with supported Spark, Aave, debt, and Uniswap LP positions.”
 
-## 1:35–2:20 — Send a stock
+## 1:35–2:10 — Public portfolios
+
+1. Open Portfolios and select a public strategy.
+2. Show its thesis, target weights, follower count, and creator holdings read from X Layer.
+3. Copy its share link.
+4. Enter a small amount under Replicate and show the allocation preview.
+
+Say: “This is not custodial copy trading. Following moves no money. Replicate turns a public allocation into routed trades, and the follower approves every transaction from their own wallet.”
+
+## 2:10–2:35 — Send a stock
 
 1. Open Send.
 2. Select NVIDIA and a fractional amount.
@@ -35,17 +44,17 @@ Say: “The Book combines wallet balances with supported Spark, Aave, debt, and 
 
 Say: “A wallet is paid immediately. Someone without an address receives a private link and claims into their own wallet. Unclaimed shares return after 14 days.”
 
-## 2:20–2:45 — Strategy and OKX AI
+## 2:35–2:50 — Strategy and OKX AI
 
 Open Strategy. Show the $100 stock-mix planner and one listed verification or yield service.
 
 Say: “OKX AI specialists can analyze a trade or yield opportunity, including paid services, but agents do not control execution. The wallet still signs.”
 
-## 2:45–3:00 — Close
+## 2:50–3:00 — Close
 
 Open About and show the X Layer proof panel.
 
-“Weesh is stocks you can actually use: buy, hold, send, and compose—on X Layer, from one user-controlled wallet.”
+“Weesh is the social brokerage for tokenized stocks: build a portfolio, prove it onchain, share the thesis, and let anyone replicate it from their own wallet.”
 
 ## Recording checklist
 

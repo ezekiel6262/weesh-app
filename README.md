@@ -15,6 +15,7 @@ Most tokenized-stock products stop at trading or portfolio display. Weesh treats
 3. Send fractional shares directly to a wallet or create a private claim link.
 4. Park or lend idle stablecoins through Spark and Aave.
 5. Ask listed OKX AI specialists to analyze a strategy while the user retains signing control.
+6. Publish a portfolio on X Layer so others can follow, discuss, fork, or replicate it from their own wallet.
 
 ## Hackathon track
 
@@ -31,12 +32,14 @@ Weesh integrates tokenized stocks and real-world assets on X Layer, provides a l
 | Stock gift | Sends shares to wallets or creates private claim links through WeeshDrop |
 | Claim | Recipient connects a wallet and claims shares from the X Layer contract |
 | Earn | Spark savings, Aave lending/borrowing, and Uniswap V3 liquidity |
+| Portfolios | Public/unlisted/private allocations, verified holdings, follows, comments, sharing, and user-signed replication |
 | Strategy | Self-directed allocation tools plus listed OKX AI agent calls |
 
 ## Verifiable integration
 
 - Network: X Layer mainnet, chain ID `196`
 - Stock gift contract: [`0x76960502d4d84381fab3ec48be229342631fc33f`](https://www.oklink.com/x-layer/address/0x76960502d4d84381fab3ec48be229342631fc33f)
+- Portfolio registry: [`0x0f66d0e9d1ca11955cc97a935a1e1ced95523e7d`](https://www.oklink.com/x-layer/address/0x0f66d0e9d1ca11955cc97a935a1e1ced95523e7d)
 - Trading: Uniswap V3 pools with OKX DEX aggregator/RFQ fallback
 - Wallet execution: every asset-moving action is signed by the user
 - Transaction proof: successful actions link to OKLink from the product

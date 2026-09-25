@@ -11,7 +11,7 @@ const NAV = [
   { href: "/markets", label: "Markets", mobile: "Markets" },
   { href: "/trade", label: "Trade", mobile: "Trade" },
   { href: "/earn", label: "Earn", mobile: "Earn" },
-  { href: "/strategy", label: "Strategy", mobile: "Strategy" },
+  { href: "/portfolios", label: "Portfolios", mobile: "Portfolios" },
   { href: "/send", label: "Send", mobile: "Send" },
 ];
 
@@ -19,6 +19,7 @@ function on(path: string, href: string) {
   if (href === "/app") return path === "/app";
   if (href === "/markets") return path === "/markets" || path.startsWith("/s/");
   if (href === "/send") return path.startsWith("/send");
+  if (href === "/portfolios") return path.startsWith("/portfolios") || path.startsWith("/p/");
   return path === href || path.startsWith(`${href}/`);
 }
 
