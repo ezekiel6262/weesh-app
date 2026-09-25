@@ -1,19 +1,24 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectBar } from "./Connect";
 import { GasCover } from "./GasCover";
 
-const NAV = [
+const PRIMARY = [
   { href: "/app", label: "Dashboard", mobile: "Home" },
-  { href: "/markets", label: "Markets", mobile: "Markets" },
   { href: "/trade", label: "Trade", mobile: "Trade" },
   { href: "/strategy", label: "Strategy", mobile: "Strategy" },
   { href: "/earn", label: "Earn", mobile: "Earn" },
-  { href: "/portfolios", label: "Portfolios", mobile: "Portfolios" },
-  { href: "/send", label: "Send", mobile: "Send" },
+];
+
+const MORE = [
+  { href: "/markets", label: "Markets", note: "Explore tokenized stocks" },
+  { href: "/portfolios", label: "Portfolios", note: "Follow public strategies" },
+  { href: "/send", label: "Send", note: "Send shares or dollars" },
+  { href: "/settings", label: "Settings", note: "Wallet and preferences" },
+  { href: "/about", label: "About", note: "How Weesh works" },
 ];
 
 function on(path: string, href: string) {
@@ -36,6 +41,8 @@ export function Logo() {
 
 export function Shell({ children }: { children: ReactNode }) {
   const path = usePathname();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreActive = MORE.some((item) => on(path, item.href));
   if (path === "/") return <>{children}</>;
   return (
     <div className="shell">
@@ -47,11 +54,21 @@ export function Shell({ children }: { children: ReactNode }) {
             Weesh
           </Link>
           <nav className="top-nav">
-            {NAV.map((n) => (
+            {PRIMARY.map((n) => (
               <Link key={n.href} href={n.href} className={on(path, n.href) ? "on" : ""}>
                 {n.label}
               </Link>
             ))}
+            <details className="nav-more">
+              <summary className={moreActive ? "on" : ""}>More <span aria-hidden>⌄</span></summary>
+              <div className="nav-menu">
+                {MORE.map((item) => (
+                  <Link key={item.href} href={item.href} className={on(path, item.href) ? "on" : ""}>
+                    <strong>{item.label}</strong><small>{item.note}</small>
+                  </Link>
+                ))}
+              </div>
+            </details>
           </nav>
           <ConnectBar compact />
         </div>
@@ -64,12 +81,29 @@ export function Shell({ children }: { children: ReactNode }) {
         <span>X Layer · xStocks</span>
       </footer>
       <nav className="tabbar">
-        {NAV.map((n) => (
+        {PRIMARY.map((n) => (
           <Link key={n.href} href={n.href} className={on(path, n.href) ? "on" : ""}>
             {n.mobile}
           </Link>
         ))}
+        <button type="button" className={moreActive || moreOpen ? "on" : ""} onClick={() => setMoreOpen(true)} aria-expanded={moreOpen}>
+          More
+        </button>
       </nav>
+      {moreOpen ? (
+        <div className="mobile-nav-backdrop" onClick={() => setMoreOpen(false)}>
+          <section className="mobile-nav-sheet" aria-label="More navigation" onClick={(event) => event.stopPropagation()}>
+            <div className="mobile-nav-head"><strong>More</strong><button type="button" onClick={() => setMoreOpen(false)} aria-label="Close menu">×</button></div>
+            <div className="mobile-nav-links">
+              {MORE.map((item) => (
+                <Link key={item.href} href={item.href} className={on(path, item.href) ? "on" : ""} onClick={() => setMoreOpen(false)}>
+                  <span><strong>{item.label}</strong><small>{item.note}</small></span><span aria-hidden>→</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }
