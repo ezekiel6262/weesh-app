@@ -10,6 +10,7 @@ const NAV = [
   { href: "/app", label: "Dashboard", mobile: "Home" },
   { href: "/markets", label: "Markets", mobile: "Markets" },
   { href: "/trade", label: "Trade", mobile: "Trade" },
+  { href: "/strategy", label: "Strategy", mobile: "Strategy" },
   { href: "/earn", label: "Earn", mobile: "Earn" },
   { href: "/portfolios", label: "Portfolios", mobile: "Portfolios" },
   { href: "/send", label: "Send", mobile: "Send" },

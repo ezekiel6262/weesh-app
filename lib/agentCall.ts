@@ -208,13 +208,22 @@ export async function runListedAgent(
     if (paymentHeader.length > 8000) throw new Error("Payment is too large");
     headers["PAYMENT-SIGNATURE"] = paymentHeader;
   }
-  const res = await fetch(req.url, {
-    method: req.method,
-    headers,
-    body: req.body ? JSON.stringify(req.body) : undefined,
-    redirect: "manual",
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(req.url, {
+      method: req.method,
+      headers,
+      body: req.body ? JSON.stringify(req.body) : undefined,
+      redirect: "manual",
+      cache: "no-store",
+      signal: AbortSignal.timeout(20_000),
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === "TimeoutError") {
+      throw new Error(`${agent.name} took too long to answer. Try again in a moment.`);
+    }
+    throw new Error(`${agent.name} is temporarily unreachable. Try again in a moment.`);
+  }
   const pay = res.headers.get("payment-required");
   if (res.status === 402 && pay && !paymentHeader) {
     const terms = decodePaymentRequired(pay);
@@ -226,7 +235,20 @@ export async function runListedAgent(
     };
   }
   const raw = (await res.text()).slice(0, 8000);
-  if (!res.ok) throw new Error(raw.slice(0, 240) || `Agent returned ${res.status}`);
+  if (!res.ok) {
+    let reason = "";
+    try {
+      const failed = JSON.parse(raw) as { error?: unknown; message?: unknown; detail?: unknown };
+      reason = String(failed.message || failed.error || failed.detail || "");
+    } catch {
+      reason = raw.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    }
+    throw new Error(
+      res.status >= 500
+        ? `${agent.name} is temporarily unavailable. Try again shortly.`
+        : reason.slice(0, 180) || `${agent.name} could not complete this request.`
+    );
+  }
   let parsed: unknown = null;
   try {
     parsed = raw ? JSON.parse(raw) : null;

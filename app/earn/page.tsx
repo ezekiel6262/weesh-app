@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { formatUnits } from "viem";
-import { useAccount, usePublicClient, useWriteContract } from "wagmi";
+import { useAccount, usePublicClient, useSendTransaction, useWriteContract } from "wagmi";
 import { Gate } from "@/components/Connect";
 import { Mark } from "@/components/Mark";
 import { TxStatus } from "@/components/TxStatus";
@@ -16,6 +16,7 @@ import {
   UNISWAP,
   USDT0,
   USDG,
+  USDC,
 } from "@/lib/catalog";
 import { coverGas } from "@/lib/gas";
 import { friendlyError } from "@/lib/errors";
@@ -33,6 +34,7 @@ import {
   type PoolInfo,
 } from "@/lib/lp";
 import { approveIfNeeded, bumpBook } from "@/lib/tx";
+import { prepareStable } from "@/lib/stables";
 import { useBook } from "@/lib/useBook";
 
 export default function EarnPage() {
@@ -67,27 +69,49 @@ function SparkCard() {
   const { address } = useAccount();
   const client = usePublicClient();
   const { writeContractAsync, isPending } = useWriteContract();
+  const { sendTransactionAsync, isPending: sending } = useSendTransaction();
   const { lines } = useBook();
   const [amt, setAmt] = useState("");
   const [tx, setTx] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [step, setStep] = useState<"idle" | "approve" | "sign">("idle");
+  const [preparing, setPreparing] = useState("");
   const cash = lines.find((l) => l.asset.id === "USDT0");
   const parsed = parseAmount(amt, USDT0);
   const walletBalance = cash?.wallet ?? BigInt(0);
+  const stableBalances = {
+    [USDG.id]: lines.find((l) => l.asset.id === USDG.id)?.wallet ?? BigInt(0),
+    [USDT0.id]: walletBalance,
+    [USDC.id]: lines.find((l) => l.asset.id === USDC.id)?.wallet ?? BigInt(0),
+  };
+  const availableDollars = stableBalances[USDG.id] + stableBalances[USDT0.id] + stableBalances[USDC.id];
   const parkedBalance = cash?.spark ?? BigInt(0);
-  const cannotPark = Boolean(parsed && parsed > walletBalance);
+  const cannotPark = Boolean(parsed && parsed > availableDollars);
   const cannotUnpark = Boolean(parsed && parsed > parkedBalance);
 
   async function park() {
     if (!address || !client || !parsed) return;
-    if (parsed > walletBalance) {
-      setErr(`Not enough USDT for this deposit. You currently have ${qty(walletBalance, 6)} USDT.`);
+    if (parsed > availableDollars) {
+      setErr(`Not enough digital dollars for this deposit. You currently have ${qty(availableDollars, 6)} across USDG, USDT, and USDC.`);
       return;
     }
     setErr(null);
     setTx(null);
     try {
+      if (walletBalance < parsed) {
+        await prepareStable({
+          client,
+          address,
+          write: writeContractAsync as never,
+          send: sendTransactionAsync,
+          target: USDT0,
+          amount: parsed,
+          balances: stableBalances,
+          onStep: setPreparing,
+        });
+        bumpBook();
+      }
+      setPreparing("");
       await coverGas(client, address);
       setStep("approve");
       await approveIfNeeded(client, writeContractAsync as never, address, USDT0, SPARK.vault, parsed);
@@ -104,7 +128,8 @@ function SparkCard() {
       bumpBook();
     } catch (e) {
       setStep("idle");
-      setErr(friendlyError(e, { action: "deposit", asset: "USDT", available: qty(walletBalance, 6) }));
+      setPreparing("");
+      setErr(friendlyError(e, { action: "deposit", asset: "digital dollars", available: qty(availableDollars, 6) }));
     }
   }
 
@@ -140,14 +165,14 @@ function SparkCard() {
       <h2>Park cash</h2>
       <p className="muted">Spark Savings on X Layer. Deposit is USDT. You keep the vault shares.</p>
       <p className="muted">
-        Wallet {qty(cash?.wallet ?? BigInt(0), 6)} · Parked {qty(cash?.spark ?? BigInt(0), 6)}
+        Available dollars {qty(availableDollars, 6)} · USDT parked {qty(cash?.spark ?? BigInt(0), 6)}
       </p>
       <label>Amount (USDT)</label>
       <div className="amount">
         <input value={amt} onChange={(e) => setAmt(e.target.value)} inputMode="decimal" placeholder="0" />
         <button
           className="btn ghost small"
-          onClick={() => setAmt(formatUnits(cash?.wallet ?? BigInt(0), 6))}
+          onClick={() => setAmt(formatUnits(availableDollars, 6))}
         >
           Max
         </button>
@@ -157,15 +182,16 @@ function SparkCard() {
         <span>covered</span>
       </div>
       <div className="actions">
-        <button className="btn primary" disabled={!parsed || isPending || cannotPark} onClick={park}>
+        <button className="btn primary" disabled={!parsed || isPending || sending || cannotPark} onClick={park}>
           Park
         </button>
         <button className="btn" disabled={!parsed || isPending || cannotUnpark} onClick={unpark}>
           Unpark
         </button>
       </div>
-      {cannotPark ? <p className="blocked">You need {qty(parsed ?? 0n, 6)} USDT, but this wallet has {qty(walletBalance, 6)}.</p> : null}
+      {cannotPark ? <p className="blocked">You need {qty(parsed ?? 0n, 6)} digital dollars, but this wallet has {qty(availableDollars, 6)}.</p> : null}
       {cannotUnpark ? <p className="blocked">Only {qty(parkedBalance, 6)} USDT is currently parked.</p> : null}
+      {preparing ? <p className="muted" role="status">{preparing}</p> : null}
       <TxStatus err={err} hash={tx} step={step} />
     </div>
   );

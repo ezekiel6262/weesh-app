@@ -20,6 +20,7 @@ export async function POST(req: Request) {
     return NextResponse.json(result);
   } catch (e) {
     const message = e instanceof Error ? e.message : "Agent call failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    const unavailable = /unreachable|unavailable|too long/i.test(message);
+    return NextResponse.json({ error: message }, { status: unavailable ? 503 : 400 });
   }
 }

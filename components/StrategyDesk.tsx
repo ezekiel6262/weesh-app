@@ -2,11 +2,16 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useAccount, useSignTypedData } from "wagmi";
+import { useAccount, usePublicClient, useSendTransaction, useSignTypedData, useWriteContract } from "wagmi";
 import { ConnectBar } from "@/components/Connect";
 import { humanUsdt, utf8ToBase64, type PaymentTerms } from "@/lib/agentCall";
+import { USDG, USDT0 } from "@/lib/catalog";
 import { xlayer } from "@/lib/chain";
-import { money } from "@/lib/format";
+import { friendlyError } from "@/lib/errors";
+import { money, qty } from "@/lib/format";
+import { prepareStable } from "@/lib/stables";
+import { bumpBook } from "@/lib/tx";
+import { useBook } from "@/lib/useBook";
 import {
   AGENTS_CHECKED_AT,
   STRATEGY_JOBS,
@@ -147,7 +152,11 @@ function MixPlanner() {
 
 function AgentCard({ agent }: { agent: ListedAgent }) {
   const { address, isConnected, chainId } = useAccount();
+  const client = usePublicClient();
   const { signTypedDataAsync } = useSignTypedData();
+  const { writeContractAsync } = useWriteContract();
+  const { sendTransactionAsync } = useSendTransaction();
+  const { lines } = useBook();
   const defaults = useMemo(() => {
     const seed: Record<string, string> = {};
     for (const field of agent.fields) seed[field.key] = field.defaultValue || "";
@@ -157,6 +166,10 @@ function AgentCard({ agent }: { agent: ListedAgent }) {
   const [run, setRun] = useState<RunState | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [paymentStep, setPaymentStep] = useState("");
+
+  const usdtBalance = lines.find((line) => line.asset.id === USDT0.id)?.wallet ?? BigInt(0);
+  const usdgBalance = lines.find((line) => line.asset.id === USDG.id)?.wallet ?? BigInt(0);
 
   async function ask(payment?: string) {
     setBusy(true);
@@ -188,10 +201,25 @@ function AgentCard({ agent }: { agent: ListedAgent }) {
   }
 
   async function pay(terms: PaymentTerms) {
-    if (!address) return;
+    if (!address || !client) return;
     setBusy(true);
     setErr(null);
     try {
+      const needed = BigInt(terms.amount);
+      if (usdtBalance < needed) {
+        await prepareStable({
+          client,
+          address,
+          write: writeContractAsync as never,
+          send: sendTransactionAsync,
+          target: USDT0,
+          amount: needed,
+          balances: { [USDG.id]: usdgBalance, [USDT0.id]: usdtBalance },
+          onStep: setPaymentStep,
+        });
+        bumpBook();
+      }
+      setPaymentStep("Approve the agent payment…");
       const nonce = `0x${crypto.getRandomValues(new Uint8Array(32)).reduce((s, b) => s + b.toString(16).padStart(2, "0"), "")}` as `0x${string}`;
       const validBefore = BigInt(Math.floor(Date.now() / 1000) + terms.maxTimeoutSeconds);
       const signature = await signTypedDataAsync({
@@ -252,8 +280,10 @@ function AgentCard({ agent }: { agent: ListedAgent }) {
       const payment = utf8ToBase64(JSON.stringify(payload));
       await ask(payment);
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "Payment was not signed");
+      setErr(friendlyError(e, { action: "agent payment", asset: "digital dollars", available: qty(usdgBalance + usdtBalance, 6) }));
       setBusy(false);
+    } finally {
+      setPaymentStep("");
     }
   }
 
@@ -305,17 +335,18 @@ function AgentCard({ agent }: { agent: ListedAgent }) {
           {run.terms ? (
             <>
               <p className="muted">
-                Pay {humanUsdt(run.terms.amount)} {run.terms.tokenName} to {run.terms.payTo.slice(0, 6)}…
-                {run.terms.payTo.slice(-4)}. One signature. Weesh does not receive it.
+                This call costs {humanUsdt(run.terms.amount)} {run.terms.tokenName}. Weesh will use your
+                available digital dollars and prepare USDT automatically if needed.
               </p>
               <button className="btn accent" disabled={busy} onClick={() => pay(run.terms!)}>
-                Pay and run
+                {busy ? "Preparing payment…" : "Pay and run"}
               </button>
             </>
           ) : null}
         </div>
       ) : null}
-      {err ? <p className="err">{err}</p> : null}
+      {paymentStep ? <p className="muted" role="status">{paymentStep}</p> : null}
+      {err ? <div className="error-card" role="alert"><strong>Couldn’t run this specialist</strong><p>{err}</p></div> : null}
     </article>
   );
 }

@@ -35,7 +35,7 @@ function MarketingHome() {
           <nav aria-label="Homepage">
             <a href="#xstocks">xStocks</a>
             <a href="#product">The app</a>
-            <a href="#strategy">Strategy</a>
+            <Link href="/strategy">Strategy</Link>
             <a href="#limits">What we don’t do</a>
           </nav>
           <Link className="btn primary" href="/app">Open app</Link>
@@ -75,7 +75,7 @@ function MarketingHome() {
 
       <section className="marketing-dark" id="product"><div className="marketing-section"><h2>Buy the stock, then use it.</h2><p className="section-lede">One app, one wallet. Every position remains at your X Layer address.</p><div className="feature-rows">{[["Dashboard","Stocks, cash, and DeFi positions in one dollar-denominated book."],["Trade","Uniswap first, with OKX DEX routing when there is no pool."],["Earn","Park cash in Spark, lend on Aave, or provide Uniswap liquidity."],["Strategy","Build a plan yourself or ask a specialist listed on OKX AI."],["Send","Give fractional shares to wallets or through private claim links."]].map(([title,copy]) => <div key={title}><h3>{title}</h3><p>{copy}</p></div>)}</div></div></section>
 
-      <section className="marketing-section" id="strategy"><h2>Say the job. Keep the decision.</h2><p className="section-lede">Plan a stock mix or compare yield with an OKX AI specialist. Agents return analysis; your wallet still approves every action.</p><div className="strategy-example"><blockquote>“Park $500 I’m not using.”</blockquote><div><article><small>Sign it yourself</small><h3>Spark Savings · USDT</h3><p>One approval and one deposit. Spark holds the position.</p></article><article><small>Ask on OKX AI</small><h3>Sterling · Yield Ranker</h3><p>Compare onchain dollar yield before deciding what to sign.</p></article></div></div></section>
+      <section className="marketing-section" id="strategy"><h2>Say the job. Keep the decision.</h2><p className="section-lede">Plan a stock mix or compare yield with an OKX AI specialist. Agents return analysis; your wallet still approves every action.</p><div className="strategy-example"><blockquote>“Park $500 I’m not using.”</blockquote><div><article><small>Sign it yourself</small><h3>Spark Savings · USDT</h3><p>One approval and one deposit. Spark holds the position.</p></article><article><small>Ask on OKX AI</small><h3>Sterling · Yield Ranker</h3><p>Compare onchain dollar yield before deciding what to sign.</p></article></div></div><div className="actions"><Link className="btn primary" href="/strategy">Explore strategies</Link><Link className="btn ghost" href="/portfolios">Browse public portfolios</Link></div></section>
 
       <section className="marketing-section split send-story"><div><h2>Give stock to anyone.</h2><p className="section-lede">Wallets receive shares immediately. Everyone else gets a private link, and unclaimed gifts return after 14 days.</p><Link href="/app" className="btn primary">Open Send</Link></div><div className="gift-example"><h3>Ada’s class · 0.1 SPY each</h3><p><span>0x4f2a…c9e1</span><strong className="ok">Paid</strong></p><p><span>ada@school.edu</span><strong>Claimed</strong></p><p><span>Leo</span><strong>12 days left</strong></p></div></section>
 
@@ -132,8 +132,11 @@ function Book() {
           <button className="btn ghost" onClick={() => setReceive(true)}>
             Add money
           </button>
-          <Link href={stockPath("NVDA")} className="btn primary">
+          <Link href="/trade" className="btn primary">
             Trade
+          </Link>
+          <Link href="/strategy" className="btn ghost">
+            Build a strategy
           </Link>
         </div>
       </div>
