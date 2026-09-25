@@ -7,7 +7,7 @@ import { ConnectBar } from "./Connect";
 import { GasCover } from "./GasCover";
 
 const NAV = [
-  { href: "/", label: "Dashboard", mobile: "Home" },
+  { href: "/app", label: "Dashboard", mobile: "Home" },
   { href: "/markets", label: "Markets", mobile: "Markets" },
   { href: "/trade", label: "Trade", mobile: "Trade" },
   { href: "/earn", label: "Earn", mobile: "Earn" },
@@ -16,7 +16,7 @@ const NAV = [
 ];
 
 function on(path: string, href: string) {
-  if (href === "/") return path === "/";
+  if (href === "/app") return path === "/app";
   if (href === "/markets") return path === "/markets" || path.startsWith("/s/");
   if (href === "/send") return path.startsWith("/send");
   return path === href || path.startsWith(`${href}/`);
@@ -34,12 +34,13 @@ export function Logo() {
 
 export function Shell({ children }: { children: ReactNode }) {
   const path = usePathname();
+  if (path === "/") return <>{children}</>;
   return (
     <div className="shell">
       <GasCover />
       <header className="top">
         <div className="top-inner">
-          <Link href="/" className="brand">
+          <Link href="/app" className="brand">
             <Logo />
             Weesh
           </Link>

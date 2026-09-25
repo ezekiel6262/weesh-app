@@ -61,7 +61,7 @@ export default function AboutPage() {
         <Link className="btn primary" href="/s/NVDA">
           Open NVIDIA
         </Link>
-        <Link className="btn ghost" href="/">
+        <Link className="btn ghost" href="/app">
           Back to dashboard
         </Link>
       </p>
