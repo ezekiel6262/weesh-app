@@ -4,15 +4,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { WagmiProvider as PrivyWagmi } from "@privy-io/wagmi";
 import { useState, type ReactNode } from "react";
-import { createConfig, http, WagmiProvider } from "wagmi";
-import { xlayer } from "@/lib/chain";
+import { createConfig, WagmiProvider } from "wagmi";
+import { xlayer, xlayerTransport } from "@/lib/chain";
 import { WalletSync } from "@/components/WalletSync";
 import { privyAppId, privyConfig } from "@/lib/privy";
 import { config } from "@/lib/wagmi";
 
 const fallback = createConfig({
   chains: [xlayer],
-  transports: { [xlayer.id]: http("https://rpc.xlayer.tech") },
+  transports: { [xlayer.id]: xlayerTransport() },
   ssr: true,
 });
 

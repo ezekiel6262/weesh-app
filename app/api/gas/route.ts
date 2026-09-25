@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
-import { createPublicClient, createWalletClient, http, isAddress, parseEther, type Address, type Hex } from "viem";
+import { createPublicClient, createWalletClient, isAddress, parseEther, type Address, type Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { xlayer } from "@/lib/chain";
+import { xlayer, xlayerTransport } from "@/lib/chain";
 
 const STIPEND = parseEther("0.002");
 const MIN = parseEther("0.0003");
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   if (!key) return Response.json({ skipped: true });
 
   const account = privateKeyToAccount(key);
-  const pub = createPublicClient({ chain: xlayer, transport: http() });
+  const pub = createPublicClient({ chain: xlayer, transport: xlayerTransport() });
   const userBal = await pub.getBalance({ address: address as Address });
   if (userBal >= MIN) return Response.json({ skipped: true, reason: "funded" });
 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "tank empty" }, { status: 503 });
   }
 
-  const wallet = createWalletClient({ account, chain: xlayer, transport: http() });
+  const wallet = createWalletClient({ account, chain: xlayer, transport: xlayerTransport() });
   const hash = await wallet.sendTransaction({ to: address as Address, value: STIPEND });
   book[address.toLowerCase()] = Date.now();
   await save(book);

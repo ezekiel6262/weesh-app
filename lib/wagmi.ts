@@ -1,6 +1,5 @@
 import { createConfig } from "@privy-io/wagmi";
-import { http } from "wagmi";
-import { xlayer } from "./chain";
+import { xlayer, xlayerTransport } from "./chain";
 
 declare global {
   interface Window {
@@ -11,6 +10,6 @@ declare global {
 export const config = createConfig({
   chains: [xlayer],
   transports: {
-    [xlayer.id]: http("https://rpc.xlayer.tech"),
+    [xlayer.id]: xlayerTransport(),
   },
 });

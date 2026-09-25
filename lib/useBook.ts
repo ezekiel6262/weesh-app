@@ -7,6 +7,7 @@ import { AAVE, AAVE_CRYPTO, ASSETS, QUOTE, SPARK, STOCKS, USDC, USDG, USDT0, typ
 import { usdFrom } from "./format";
 import { listPositions, type LpPosition } from "./lp";
 import { usdPrice } from "./quote";
+import { friendlyError } from "./errors";
 
 export type Line = {
   asset: Asset;
@@ -42,6 +43,7 @@ export function useBook() {
       return;
     }
     let dead = false;
+    let retry: number | undefined;
     (async () => {
       setLoading(true);
       setError(null);
@@ -55,7 +57,7 @@ export function useBook() {
           tradable: false,
         }));
         const watch: Asset[] = [USDG, USDT0, USDC, ...STOCKS, ...extras, ...AAVE_CRYPTO];
-        const rows = await Promise.all(
+        const settled = await Promise.allSettled(
           watch.map(async (a) => {
             const priced =
               a.kind === "stable"
@@ -109,19 +111,29 @@ export function useBook() {
             return { asset: a, wallet, aave, spark, debt, px, usd } satisfies Line;
           })
         );
-        const positions = await listPositions(client, address);
+        const rows = settled.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+        if (rows.length === 0) throw new Error("X Layer RPC unavailable");
+        const positions = await listPositions(client, address).catch(() => []);
         if (!dead) {
           setLines(rows);
           setLp(positions);
+          if (rows.length < watch.length) {
+            setError("Some balances could not be refreshed. Weesh will retry automatically.");
+            retry = window.setTimeout(() => setTick((n) => n + 1), 4_000);
+          }
         }
       } catch (e) {
-        if (!dead) setError(e instanceof Error ? e.message : "Could not load the dashboard");
+        if (!dead) {
+          setError(friendlyError(e, { action: "balance refresh" }));
+          retry = window.setTimeout(() => setTick((n) => n + 1), 4_000);
+        }
       } finally {
         if (!dead) setLoading(false);
       }
     })();
     return () => {
       dead = true;
+      if (retry) window.clearTimeout(retry);
     };
   }, [address, client, tick]);
 
