@@ -1,4 +1,5 @@
 import { txUrl } from "@/lib/tx";
+import { friendlyError } from "@/lib/errors";
 
 export function TxStatus({
   err,
@@ -15,7 +16,7 @@ export function TxStatus({
       {step === "fee" ? <p className="muted">Weesh fee — confirm in wallet…</p> : null}
       {step === "approve" ? <p className="muted">Approve in your wallet…</p> : null}
       {step === "sign" ? <p className="muted">Confirm in your wallet…</p> : null}
-      {err ? <p className="err">{err}</p> : null}
+      {err ? <div className="error-card" role="alert"><strong>Couldn’t complete that</strong><p>{friendlyError(err)}</p></div> : null}
       {hash ? (
         <p className="ok">
           Done.{" "}

@@ -13,6 +13,7 @@ import { recordAct } from "@/lib/activity";
 import { QUOTE, STOCKS } from "@/lib/catalog";
 import { xlayer } from "@/lib/chain";
 import { splitWeeshFee } from "@/lib/fee";
+import { friendlyError } from "@/lib/errors";
 import { executeRoutedSwap } from "@/lib/fill";
 import { money, parseAmount, qty } from "@/lib/format";
 import { routeQuote, type Quote } from "@/lib/quote";
@@ -77,6 +78,7 @@ export function TradeTicket({
   const bal = lines.find((l) => l.asset.id === pay.id)?.wallet ?? BigInt(0);
   const pos = lines.find((l) => l.asset.id === stock.id);
   const parsed = useMemo(() => parseAmount(amount, pay), [amount, pay]);
+  const insufficient = Boolean(parsed && parsed > bal);
 
   useEffect(() => {
     const payAsset = side === "buy" ? QUOTE : stock;
@@ -129,6 +131,10 @@ export function TradeTicket({
 
   async function submit() {
     if (!address || !client || !q || !parsed || halted) return;
+    if (parsed > bal) {
+      setErr(`Not enough ${pay.symbol}. Available: ${qty(bal, pay.decimals)} ${pay.symbol}.`);
+      return;
+    }
     setErr(null);
     setTx(null);
     try {
@@ -152,7 +158,7 @@ export function TradeTicket({
       bumpBook();
     } catch (e) {
       setStep("idle");
-      setErr(e instanceof Error ? e.message : "Transaction failed");
+      setErr(friendlyError(e, { action: side === "buy" ? "purchase" : "sale", asset: pay.symbol, available: qty(bal, pay.decimals) }));
     }
   }
 
@@ -254,6 +260,7 @@ export function TradeTicket({
         ))}
       </div>
       <p className="muted">Available {qty(bal, pay.decimals)}</p>
+      {insufficient ? <p className="blocked">This amount is higher than your available {pay.symbol} balance.</p> : null}
       {!parsed && !halted ? <p className="muted">Enter an amount to load a live quote.</p> : null}
       {quoting ? <p className="muted">Quoting Uniswap / OKX DEX…</p> : null}
       {q ? (
@@ -276,7 +283,7 @@ export function TradeTicket({
       <div className="actions">
         <button
           className="btn primary"
-          disabled={!q || isPending || sending || halted || (side === "buy" && bal === BigInt(0))}
+          disabled={!q || isPending || sending || halted || insufficient || (side === "buy" && bal === BigInt(0))}
           onClick={submit}
         >
           {isPending || sending

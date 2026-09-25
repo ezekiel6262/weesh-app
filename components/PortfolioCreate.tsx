@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount, usePublicClient, useReadContract, useWriteContract } from "wagmi";
 import { ConnectBar } from "@/components/Connect";
 import { Mark } from "@/components/Mark";
+import { friendlyError } from "@/lib/errors";
 import { ASSETS } from "@/lib/catalog";
 import { PORTFOLIO_REGISTRY, assetFor, portfolioRegistryAbi, readPrivatePortfolios, savePrivatePortfolio, type PortfolioVisibility } from "@/lib/portfolio";
 
@@ -65,7 +66,7 @@ export function PortfolioCreate() {
       const hash = await writeContractAsync({ address: PORTFOLIO_REGISTRY, abi: portfolioRegistryAbi, functionName: "create", args: [name.trim(), thesis.trim(), assets.map((a) => a.address), legs.map((leg) => leg.weight * 100), visibility === "public" ? 0 : 1, showHoldings] });
       await client.waitForTransactionReceipt({ hash });
       router.push(`/p/${id.toString()}`);
-    } catch (e) { setErr(e instanceof Error ? e.message : "Portfolio could not be published"); }
+    } catch (e) { setErr(friendlyError(e, { action: "portfolio publication" })); }
   }
 
   if (!isConnected) return <section className="hero"><p className="kicker">Create portfolio</p><h1>Start with your wallet.</h1><p className="lede">The creator address becomes the strategy’s public author. Weesh never controls it.</p><ConnectBar /></section>;

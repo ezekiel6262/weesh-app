@@ -5,6 +5,7 @@ import { useAccount, usePublicClient, useReadContract, useWriteContract } from "
 import { parseEventLogs, parseUnits, type Address, type Hex } from "viem";
 import { erc20Abi } from "@/lib/abi";
 import { xlayer } from "@/lib/chain";
+import { friendlyError } from "@/lib/errors";
 import {
   DROP_READY,
   SEND_STOCKS,
@@ -133,7 +134,7 @@ export function SendDesk() {
       setTx(hash);
       setLinks(rows);
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "The send did not go through");
+      setErr(friendlyError(e, { action: "send", asset: stock.symbol }));
     } finally {
       setBusy(false);
     }
@@ -472,7 +473,7 @@ function DueButton({
           try {
             await onRun();
           } catch (e) {
-            setErr(e instanceof Error ? e.message : "The next round did not send");
+            setErr(friendlyError(e, { action: "scheduled send" }));
           } finally {
             setBusy(false);
           }

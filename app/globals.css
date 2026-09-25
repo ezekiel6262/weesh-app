@@ -67,6 +67,9 @@
 .discussion article { border-top: 1px solid var(--line); padding: 14px 0; }
 .discussion article small { color: var(--muted); margin-left: 8px; }
 .discussion article p { margin-bottom: 0; }
+.error-card { margin-top: 12px; padding: 13px 15px; border: 1px solid #e4a89c; border-radius: 12px; background: #fff1ee; color: #8f2f1f; }
+.error-card strong { display: block; margin-bottom: 3px; }
+.error-card p { margin: 0; }
 
 @media (max-width: 820px) {
   .portfolio-hero, .portfolio-detail-head, .portfolio-detail-grid { grid-template-columns: 1fr; }

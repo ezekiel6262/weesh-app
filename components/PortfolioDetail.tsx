@@ -12,6 +12,7 @@ import { erc20Abi } from "@/lib/abi";
 import { QUOTE } from "@/lib/catalog";
 import { xlayer } from "@/lib/chain";
 import { executeRoutedSwap } from "@/lib/fill";
+import { friendlyError } from "@/lib/errors";
 import { money, qty } from "@/lib/format";
 import { PORTFOLIO_REGISTRY, assetFor, portfolioRegistryAbi, readPrivatePortfolios, shortCreator, type Portfolio, type PortfolioComment } from "@/lib/portfolio";
 import { bumpBook } from "@/lib/tx";
@@ -99,7 +100,7 @@ function Replicate({ portfolio }: { portfolio: Portfolio }) {
         setHash(result.hash); setProgress(i + 1);
       }
       bumpBook();
-    } catch (e) { setErr(e instanceof Error ? e.message : "Replication stopped"); } finally { setRunning(false); }
+    } catch (e) { setErr(friendlyError(e, { action: "portfolio replication", asset: "USDG" })); } finally { setRunning(false); }
   }
   return <div className="card replicate-card"><p className="kicker">Replicate</p><h2>Build this in your wallet</h2><p className="muted">One guided flow. Each routed trade remains visible and requires your wallet approval.</p><label>Invest (USDG)</label><input inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} /><div className="replicate-legs">{legs.map((leg) => <p key={leg.asset!.id}><span>{leg.asset!.symbol} · {leg.weight}%</span><strong>{money((spend * leg.weight) / 100)}</strong></p>)}</div><p className="hint">0.05% Weesh fee per swap. Uniswap first, OKX DEX fallback. Any USDG allocation stays in your wallet.</p>{!isConnected || chainId !== xlayer.id ? <ConnectBar /> : <button className="btn primary wide" disabled={running || spend <= 0} onClick={() => void replicate()}>{running ? `Signing trade ${progress + 1}…` : "Replicate portfolio"}</button>}{progress > 0 ? <p className="ok">Completed {progress} routed trade{progress === 1 ? "" : "s"}.</p> : null}<TxStatus err={err} hash={hash} /></div>;
 }

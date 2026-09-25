@@ -6,6 +6,7 @@ import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { isAddress, type Hex } from "viem";
 import { ConnectBar } from "@/components/Connect";
 import { xlayer } from "@/lib/chain";
+import { friendlyError } from "@/lib/errors";
 import { byAddress } from "@/lib/catalog";
 import { DROP_READY, WEESH_DROP, dropAbi } from "@/lib/drop";
 import { qty, shortAddr } from "@/lib/format";
@@ -73,7 +74,7 @@ function ClaimInner() {
       });
       setHash(tx);
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "The claim did not go through");
+      setErr(friendlyError(e, { action: "claim" }));
     } finally {
       setBusy(false);
     }

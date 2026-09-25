@@ -18,6 +18,7 @@ import {
   USDG,
 } from "@/lib/catalog";
 import { coverGas } from "@/lib/gas";
+import { friendlyError } from "@/lib/errors";
 import { parseAmount, pct, poolFeePct, qty, toUnits } from "@/lib/format";
 import {
   bestPool,
@@ -73,9 +74,17 @@ function SparkCard() {
   const [step, setStep] = useState<"idle" | "approve" | "sign">("idle");
   const cash = lines.find((l) => l.asset.id === "USDT0");
   const parsed = parseAmount(amt, USDT0);
+  const walletBalance = cash?.wallet ?? BigInt(0);
+  const parkedBalance = cash?.spark ?? BigInt(0);
+  const cannotPark = Boolean(parsed && parsed > walletBalance);
+  const cannotUnpark = Boolean(parsed && parsed > parkedBalance);
 
   async function park() {
     if (!address || !client || !parsed) return;
+    if (parsed > walletBalance) {
+      setErr(`Not enough USDT for this deposit. You currently have ${qty(walletBalance, 6)} USDT.`);
+      return;
+    }
     setErr(null);
     setTx(null);
     try {
@@ -95,12 +104,16 @@ function SparkCard() {
       bumpBook();
     } catch (e) {
       setStep("idle");
-      setErr(e instanceof Error ? e.message : "Failed");
+      setErr(friendlyError(e, { action: "deposit", asset: "USDT", available: qty(walletBalance, 6) }));
     }
   }
 
   async function unpark() {
     if (!address || !client || !parsed) return;
+    if (parsed > parkedBalance) {
+      setErr(`You only have ${qty(parkedBalance, 6)} USDT parked in Spark.`);
+      return;
+    }
     setErr(null);
     try {
       await coverGas(client, address);
@@ -117,7 +130,7 @@ function SparkCard() {
       bumpBook();
     } catch (e) {
       setStep("idle");
-      setErr(e instanceof Error ? e.message : "Failed");
+      setErr(friendlyError(e, { action: "withdrawal", asset: "parked USDT", available: qty(parkedBalance, 6) }));
     }
   }
 
@@ -144,13 +157,15 @@ function SparkCard() {
         <span>covered</span>
       </div>
       <div className="actions">
-        <button className="btn primary" disabled={!parsed || isPending} onClick={park}>
+        <button className="btn primary" disabled={!parsed || isPending || cannotPark} onClick={park}>
           Park
         </button>
-        <button className="btn" disabled={!parsed || isPending} onClick={unpark}>
+        <button className="btn" disabled={!parsed || isPending || cannotUnpark} onClick={unpark}>
           Unpark
         </button>
       </div>
+      {cannotPark ? <p className="blocked">You need {qty(parsed ?? 0n, 6)} USDT, but this wallet has {qty(walletBalance, 6)}.</p> : null}
+      {cannotUnpark ? <p className="blocked">Only {qty(parkedBalance, 6)} USDT is currently parked.</p> : null}
       <TxStatus err={err} hash={tx} step={step} />
     </div>
   );
@@ -202,6 +217,11 @@ function AaveCard() {
 
   async function go(kind: "supply" | "withdraw" | "borrow" | "repay") {
     if (!address || !client || !parsed || !asset.aave) return;
+    const available = kind === "withdraw" ? (line?.aave ?? 0n) : (line?.wallet ?? 0n);
+    if ((kind === "supply" || kind === "repay" || kind === "withdraw") && parsed > available) {
+      setErr(`Not enough ${asset.symbol}. Available: ${qty(available, asset.decimals)} ${asset.symbol}.`);
+      return;
+    }
     setErr(null);
     setTx(null);
     try {
@@ -245,7 +265,7 @@ function AaveCard() {
       bumpBook();
     } catch (e) {
       setStep("idle");
-      setErr(e instanceof Error ? e.message : "Failed");
+      setErr(friendlyError(e, { action: kind, asset: asset.symbol, available: qty(available, asset.decimals) }));
     }
   }
 
@@ -414,7 +434,7 @@ function LpCard() {
       bumpBook();
     } catch (e) {
       setStep("idle");
-      setErr(e instanceof Error ? e.message : "Failed");
+      setErr(friendlyError(e, { action: "liquidity deposit" }));
     }
   }
 
@@ -458,7 +478,7 @@ function LpCard() {
       bumpBook();
     } catch (e) {
       setStep("idle");
-      setErr(e instanceof Error ? e.message : "Failed");
+      setErr(friendlyError(e, { action: "liquidity withdrawal" }));
     }
   }
 
