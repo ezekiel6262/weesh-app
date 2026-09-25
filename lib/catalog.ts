@@ -12,6 +12,8 @@ export type Asset = {
   tradable: boolean;
   /** Swatch for the letter mark. */
   tint: string;
+  /** Display icon. Local paths or issuer-hosted metadata URLs. */
+  logo?: string;
   /** Rebase xStock this wrapper holds (ERC-4626 asset). */
   underlying?: `0x${string}`;
   /** Aave underlying — only if listed on X Layer. */
@@ -28,6 +30,7 @@ export const USDG: Asset = {
   kind: "stable",
   tradable: true,
   tint: "#1F7A4D",
+  logo: "/assets/usdg.svg",
   aave: {
     aToken: "0x228765a3C18065C923F23a0CCb6c7cEFB3eA2223",
     canCollateral: false,
@@ -44,6 +47,7 @@ export const USDT0: Asset = {
   kind: "stable",
   tradable: true,
   tint: "#26A17B",
+  logo: "/assets/usdt.svg",
   aave: {
     aToken: "0xF356ae412dB5df43BD3a10746f7ad4e1C4De4297",
     canCollateral: false,
@@ -61,6 +65,7 @@ export const USDC: Asset = {
   kind: "stable",
   tradable: true,
   tint: "#2775CA",
+  logo: "/assets/usdc.svg",
 };
 
 /**

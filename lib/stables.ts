@@ -20,23 +20,25 @@ export async function prepareStable(args: {
   const current = args.balances[args.target.id] ?? BigInt(0);
   if (current >= args.amount) return false;
   const shortfall = args.amount - current;
+  // The next action needs the full amount even if the swap fills at its 0.5% slippage floor.
+  const safeOutput = (shortfall * BigInt(10_075) + BigInt(9_999)) / BigInt(10_000);
   const source = STABLES
     .filter((asset) => asset.id !== args.target.id)
     .sort((a, b) => Number((args.balances[b.id] ?? BigInt(0)) - (args.balances[a.id] ?? BigInt(0))))[0];
   const balance = source ? args.balances[source.id] ?? BigInt(0) : BigInt(0);
   if (!source || balance === BigInt(0)) throw new Error(`Not enough digital dollars for this action.`);
 
-  let input = (shortfall * BigInt(10_100) + BigInt(9_999)) / BigInt(10_000);
+  let input = (shortfall * BigInt(10_200) + BigInt(9_999)) / BigInt(10_000);
   if (input > balance) input = balance;
   args.onStep?.(`Preparing ${args.target.symbol} from ${source.symbol}…`);
   let quote = await routeQuote(args.client, source, args.target, splitWeeshFee(input).swapIn);
   if (!quote) throw new Error(`No ${source.symbol} to ${args.target.symbol} route is available right now.`);
-  if (quote.amountOut < shortfall && input < balance) {
-    input = (input * shortfall * BigInt(10_020)) / (quote.amountOut * BigInt(10_000)) + BigInt(1);
+  if (quote.amountOut < safeOutput && input < balance) {
+    input = (input * safeOutput * BigInt(10_020)) / (quote.amountOut * BigInt(10_000)) + BigInt(1);
     if (input > balance) input = balance;
     quote = await routeQuote(args.client, source, args.target, splitWeeshFee(input).swapIn);
   }
-  if (!quote || quote.amountOut < shortfall) throw new Error(`Your digital-dollar balance cannot cover this action after conversion.`);
+  if (!quote || quote.amountOut < safeOutput) throw new Error(`Your digital-dollar balance cannot cover this action after conversion.`);
   await executeRoutedSwap({
     client: args.client,
     address: args.address,

@@ -138,6 +138,9 @@ function Book() {
           <Link href="/strategy" className="btn ghost">
             Build a strategy
           </Link>
+          <Link href="/swap" className="btn ghost">
+            Swap dollars
+          </Link>
         </div>
       </div>
       {dollars ? <GetDollars /> : null}

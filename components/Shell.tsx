@@ -14,6 +14,7 @@ const PRIMARY = [
 ];
 
 const MORE = [
+  { href: "/swap", label: "Swap dollars", note: "USDG, USDT, and USDC" },
   { href: "/markets", label: "Markets", note: "Explore tokenized stocks" },
   { href: "/portfolios", label: "Portfolios", note: "Follow public strategies" },
   { href: "/send", label: "Send", note: "Send shares or dollars" },

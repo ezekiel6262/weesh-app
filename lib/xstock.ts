@@ -58,6 +58,7 @@ export function toAsset(row: XStockRow): Asset {
     kind: row.kind === "etf" ? "etf" : "equity",
     tradable: !row.halted,
     tint: tintFor(row.id),
+    logo: row.logo ?? undefined,
     underlying: row.underlying ? (row.underlying as `0x${string}`) : undefined,
   };
   assetCache.set(row.id, asset);
