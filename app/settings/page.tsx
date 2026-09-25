@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { Gate } from "@/components/Connect";
 import { OKX_BACKUP } from "@/lib/chain";
 import { addrUrl } from "@/lib/tx";
+import { useSessionSignOut } from "@/lib/useSessionSignOut";
 
 export default function SettingsPage() {
   return (
@@ -17,7 +18,8 @@ export default function SettingsPage() {
 
 function Settings() {
   const { address } = useAccount();
-  const { user, logout } = usePrivy();
+  const { user } = usePrivy();
+  const { signOut, signingOut } = useSessionSignOut();
   const { exportWallet } = useExportWallet();
   const [copied, setCopied] = useState(false);
   const email = user?.email?.address;
@@ -51,8 +53,8 @@ function Settings() {
             {copied ? "Copied" : "Copy"}
           </button>
           {email ? <span className="muted">Signed in with {email}</span> : null}
-          <button className="btn ghost" style={{ color: "var(--accent)" }} onClick={() => logout()}>
-            Sign out
+          <button className="btn ghost" style={{ color: "var(--accent)" }} disabled={signingOut} onClick={() => void signOut()}>
+            {signingOut ? "Signing out…" : "Sign out"}
           </button>
           <a className="btn ghost" href={addrUrl(address ?? "")} target="_blank" rel="noreferrer">
             View on X Layer explorer ↗
@@ -84,8 +86,8 @@ function Settings() {
             <a className="btn primary" href={OKX_BACKUP} target="_blank" rel="noreferrer">
               Open OKX Wallet backup
             </a>
-            <button className="btn ghost" onClick={() => logout()}>
-              Sign out
+            <button className="btn ghost" disabled={signingOut} onClick={() => void signOut()}>
+              {signingOut ? "Signing out…" : "Sign out"}
             </button>
           </p>
         </>

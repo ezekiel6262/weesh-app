@@ -7,6 +7,7 @@ import { useAccount, useSwitchChain } from "wagmi";
 import { xlayer } from "@/lib/chain";
 import { privyAppId } from "@/lib/privy";
 import { shortAddr } from "@/lib/format";
+import { useSessionSignOut } from "@/lib/useSessionSignOut";
 
 function isMobile() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -39,7 +40,7 @@ export function ConnectBar({ compact = false, start = false }: { compact?: boole
   return <LiveConnect compact={compact} start={start} />;
 }
 
-function Opening({ compact, logout }: { compact: boolean; logout: () => void }) {
+function Opening({ compact, logout }: { compact: boolean; logout: () => Promise<void> }) {
   const [stuck, setStuck] = useState(false);
   useEffect(() => {
     const t = window.setTimeout(() => setStuck(true), 12000);
@@ -50,7 +51,7 @@ function Opening({ compact, logout }: { compact: boolean; logout: () => void }) 
     <div className="connect-stack">
       <p className="muted">{stuck ? "Wallet is taking too long." : "Opening wallet…"}</p>
       {stuck ? (
-        <button className="btn ghost small" onClick={() => logout()}>
+        <button className="btn ghost small" onClick={() => void logout()}>
           Sign out and try again
         </button>
       ) : null}
@@ -59,7 +60,8 @@ function Opening({ compact, logout }: { compact: boolean; logout: () => void }) 
 }
 
 function LiveConnect({ compact, start = false }: { compact: boolean; start?: boolean }) {
-  const { ready, authenticated, logout } = usePrivy();
+  const { ready, authenticated } = usePrivy();
+  const { signOut, signingOut } = useSessionSignOut();
   const { address, isConnected, chainId } = useAccount();
   const { switchChain } = useSwitchChain();
   const { connectWallet } = useConnectWallet();
@@ -106,7 +108,7 @@ function LiveConnect({ compact, start = false }: { compact: boolean; start?: boo
   }
 
   if (!ready) {
-    return <Opening compact={compact} logout={logout} />;
+    return <Opening compact={compact} logout={signOut} />;
   }
 
   if ((authenticated || isConnected) && address) {
@@ -131,15 +133,15 @@ function LiveConnect({ compact, start = false }: { compact: boolean; start?: boo
         ) : (
           <span className="pill">{shortAddr(address)}</span>
         )}
-        <button className="btn ghost small" onClick={() => logout()}>
-          Sign out
+        <button className="btn ghost small" disabled={signingOut} onClick={() => void signOut()}>
+          {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </div>
     );
   }
 
   if (authenticated && !isConnected) {
-    return <Opening compact={compact} logout={logout} />;
+    return <Opening compact={compact} logout={signOut} />;
   }
 
   const injected = (
