@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { Mark } from "@/components/Mark";
 import { money } from "@/lib/format";
@@ -21,14 +21,17 @@ export function MarketsList({
   const [group, setGroup] = useState<"uni" | "okx" | "closed">("uni");
   const needle = q.trim().toLowerCase();
 
-  const match = (m: Market) =>
-    !needle ||
-    m.name.toLowerCase().includes(needle) ||
-    m.symbol.toLowerCase().includes(needle) ||
-    m.xSymbol.toLowerCase().includes(needle);
+  const match = useCallback(
+    (m: Market) =>
+      !needle ||
+      m.name.toLowerCase().includes(needle) ||
+      m.symbol.toLowerCase().includes(needle) ||
+      m.xSymbol.toLowerCase().includes(needle),
+    [needle],
+  );
 
-  const uni = useMemo(() => available.filter((m) => m.reason === "live" && match(m)), [available, needle]);
-  const okx = useMemo(() => available.filter((m) => m.reason === "okx" && match(m)), [available, needle]);
+  const uni = useMemo(() => available.filter((m) => m.reason === "live" && match(m)), [available, match]);
+  const okx = useMemo(() => available.filter((m) => m.reason === "okx" && match(m)), [available, match]);
   const closed = useMemo(
     () =>
       unavailable.filter(

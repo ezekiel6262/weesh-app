@@ -151,12 +151,17 @@ export function SendDesk() {
   return (
     <>
       <section className="hero">
-        <p className="kicker">Send</p>
-        <h1>{name.trim() || "Send a stock"}</h1>
+        <p className="kicker">Stock gifts</p>
+        <h1>{name.trim() || "Send shares, not cash."}</h1>
         <p className="lede">
-          {stock.name} you already hold. A wallet is paid now. A name or email gets a private link. Unclaimed shares
-          come back to you after 14 days.
+          Choose a stock you hold and who gets it. Wallets receive shares immediately; everyone else gets a private
+          claim link. Unclaimed gifts return after 14 days.
         </p>
+        <ol className="flow-steps" aria-label="How stock gifts work">
+          <li><span>1</span>Choose shares</li>
+          <li><span>2</span>Add people</li>
+          <li><span>3</span>Sign once</li>
+        </ol>
       </section>
 
       {links ? (

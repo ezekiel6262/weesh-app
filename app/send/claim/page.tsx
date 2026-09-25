@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { formatUnits, isAddress, type Hex } from "viem";
+import { isAddress, type Hex } from "viem";
 import { ConnectBar } from "@/components/Connect";
 import { xlayer } from "@/lib/chain";
 import { byAddress } from "@/lib/catalog";

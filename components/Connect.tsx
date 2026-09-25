@@ -251,7 +251,7 @@ export function Gate({ children }: { children: React.ReactNode }) {
     return (
       <section className="hero">
         <p className="kicker">Weesh</p>
-        <h1>Own stocks. Use DeFi. Stay in your wallet.</h1>
+        <h1>Stocks you can actually use.</h1>
         <SetupHint />
       </section>
     );
@@ -273,10 +273,9 @@ function LiveGate({ children }: { children: React.ReactNode }) {
     return (
       <section className="hero">
         <p className="kicker">Weesh</p>
-        <h1>Own stocks. Use DeFi. Stay in your wallet.</h1>
+        <h1>Stocks you can actually use.</h1>
         <p className="lede">
-          Create a wallet with email — no extension. The same address comes back on any device. You
-          sign, Uniswap and OKX DEX run. Weesh never holds the key.
+          Buy, hold, and send tokenized stocks on X Layer. Your wallet signs every action.
         </p>
         <ConnectBar />
       </section>

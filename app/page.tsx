@@ -36,14 +36,22 @@ function Landing() {
   return (
     <section className="landing">
       <div>
-        <h1>Own stocks. Use DeFi. Stay in your wallet.</h1>
+        <h1>Stocks you can actually use.</h1>
         <p className="lede">
-          Buy NVIDIA, Tesla or the S&P 500 with dollars on X Layer. Sign in with email. The keys and the
-          positions stay yours.
+          Buy NVIDIA, Tesla or the S&amp;P 500 on X Layer. Hold it in your wallet, send a fraction to
+          anyone, and put idle dollars to work.
         </p>
         <ConnectBar start />
+        <div className="actions">
+          <Link className="btn ghost" href="/send">
+            Send a stock
+          </Link>
+          <Link className="btn ghost" href="/about">
+            How it works
+          </Link>
+        </div>
         <p className="hint" style={{ marginTop: 14 }}>
-          Non-custodial · 0.05% per trade · gas covered
+          Your wallet · Your signature · X Layer
         </p>
       </div>
       <div className="tape-card">

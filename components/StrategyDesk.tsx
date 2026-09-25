@@ -35,16 +35,16 @@ type RunState = {
 };
 
 export function StrategyDesk() {
-  const [jobId, setJobId] = useState(STRATEGY_JOBS[0].id);
+  const [jobId, setJobId] = useState("mix");
   const job = STRATEGY_JOBS.find((j) => j.id === jobId) ?? STRATEGY_JOBS[0];
 
   return (
     <>
       <p className="kicker">Strategy</p>
-      <h2>Do the job, or hire someone who already does it</h2>
+      <h2>Plan it. Check it. Then sign.</h2>
       <p className="muted">
-        A strategy is a DeFi task. You can sign it yourself, or ask an agent already listed on OKX AI.
-        You pay that agent from your wallet. Weesh does not hold the dollars or the keys.
+        Build a stock-and-yield plan yourself or ask a specialist listed on OKX AI. Agents can analyze
+        the job, but only your wallet can approve a transaction.
       </p>
       <div className="strategy">
         <div className="job-list">
@@ -58,8 +58,8 @@ export function StrategyDesk() {
         <JobDetail job={job} />
       </div>
       <p className="muted" style={{ marginTop: 18 }}>
-        Agent names, prices, and services were read from OKX AI on {AGENTS_CHECKED_AT}. A payment you
-        sign uses the charge the agent asks for at that moment, not a number Weesh invented.
+        Listings checked on OKX AI on {AGENTS_CHECKED_AT}. Any paid call shows its current charge before
+        you sign; agent payments never pass through Weesh.
       </p>
     </>
   );
@@ -80,7 +80,7 @@ function JobDetail({ job }: { job: StrategyJob }) {
         </div>
       </div>
       <div style={{ marginTop: 16 }}>
-        <p className="kicker">OKX AI</p>
+        <p className="kicker">Ask an OKX AI specialist</p>
         {job.agentIds.length === 0 ? (
           <p className="muted">No listed agent on OKX AI does this on X Layer. The button above is the path.</p>
         ) : (
@@ -260,7 +260,14 @@ function AgentCard({ agent }: { agent: ListedAgent }) {
   return (
     <article className="card agent-card">
       <div className="agent-head">
-        {agent.picture ? <img src={agent.picture} alt="" width={40} height={40} /> : <span className="brand-mark">A</span>}
+        {agent.picture ? (
+          <span
+            className="agent-avatar"
+            role="img"
+            aria-label={`${agent.name} avatar`}
+            style={{ backgroundImage: `url(${agent.picture})` }}
+          />
+        ) : <span className="brand-mark">A</span>}
         <div>
           <strong>
             {agent.name} <span className="muted">#{agent.agentId}</span>

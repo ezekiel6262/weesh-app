@@ -357,6 +357,45 @@ textarea { min-height: 120px; resize: vertical; }
 .send-person { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .tag.wallet { color: var(--muted); background: var(--wash); }
 .send-result h2 { margin: 0 0 8px; font-size: 28px; }
+.flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+}
+.flow-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+.flow-steps span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+}
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+.proof-grid > div { background: var(--card); padding: 14px; }
+.proof-grid span { display: block; color: var(--faint); font-size: 12px; margin-bottom: 4px; }
+.proof-grid strong, .proof-grid a { font-size: 14px; font-weight: 700; }
 .chip { cursor: pointer; }
 .amount {
   display: flex;
@@ -527,7 +566,13 @@ textarea { min-height: 120px; resize: vertical; }
 .job-list span { display: block; color: var(--muted); font-size: 13px; margin-top: 4px; }
 .agent-card { margin-top: 12px; }
 .agent-head { display: flex; gap: 12px; align-items: center; }
-.agent-head img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; background: var(--wash); }
+.agent-avatar {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 10px;
+  background: var(--wash) center / cover no-repeat;
+}
 .answer { margin-top: 12px; background: var(--wash); border-radius: 12px; padding: 12px 14px; }
 .answer pre { white-space: pre-wrap; font: inherit; margin: 8px 0 0; color: var(--muted); }
 .book-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
@@ -585,4 +630,5 @@ textarea { min-height: 120px; resize: vertical; }
   .holding .px { display: none; }
   .tape { grid-template-columns: 1fr 1fr; }
   .foot { flex-direction: column; }
+  .proof-grid { grid-template-columns: 1fr; }
 }

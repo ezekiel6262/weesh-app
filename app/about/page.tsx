@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { WEESH_DROP } from "@/lib/drop";
+import { addrUrl } from "@/lib/tx";
 
 export default function AboutPage() {
   return (
@@ -29,6 +31,31 @@ export default function AboutPage() {
           convert stables for gas. There is no Weesh account and no Weesh custody.
         </p>
         <p className="muted">This is not investment advice. Tokens can trade above or below the cash-market print.</p>
+      </div>
+      <div className="card proof-card" style={{ marginTop: 16 }}>
+        <p className="kicker">Built on X Layer</p>
+        <h2>Verify, don’t trust.</h2>
+        <div className="proof-grid">
+          <div>
+            <span>Network</span>
+            <strong>X Layer · Chain 196</strong>
+          </div>
+          <div>
+            <span>Stock gifts</span>
+            <a href={addrUrl(WEESH_DROP)} target="_blank" rel="noreferrer">View contract</a>
+          </div>
+          <div>
+            <span>Execution</span>
+            <strong>Uniswap + OKX DEX</strong>
+          </div>
+          <div>
+            <span>Custody</span>
+            <strong>User-signed only</strong>
+          </div>
+        </div>
+        <p className="muted">
+          Successful trades and gifts link directly to their X Layer transaction from the confirmation screen.
+        </p>
       </div>
       <p className="actions">
         <Link className="btn primary" href="/s/NVDA">
